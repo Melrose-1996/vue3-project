@@ -1,30 +1,37 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <!-- 以前的组件必须有个根元素，vue3.0 不需要，也可以是代码片段 Fragment -->
+  <div>
+    App
+    <!-- 1. 使用根模块 state 的数据 -->
+    <p>{{ $store.state.username }}</p>
+    <!-- 2. 使用根模块 getters 的数据 -->
+    <p>{{ $store.getters.newName }}</p>
+    <p>{{ $store.getters['newName'] }}</p>
+    <!-- 3. 提交根模块 mutations 的函数 -->
+    <button @click="mutationsFn">修改名字</button>
   </div>
-  <router-view/>
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+import { useStore } from 'vuex'
+// import { useRouter } from 'vue-router'
+export default {
+  name: 'App',
+  setup() {
+    // 使用 vuex 仓库
+    const store = useStore()
+    // 1. 使用根模块 state 的数据
+    console.log(store.state.username)
+    // 2. 使用根模块 getters 的数据
+    console.log(store.getters.newName)
+    // 3. 提交根模块 mutations 的函数
+    const mutationsFn = () => {
+      // store.commit('updateName')
+      // 4. 调用根模块 actions 的函数
+      store.dispatch('updateName')
     }
+    return { mutationsFn }
   }
 }
-</style>
+</script>
+<style lang="less"></style>
