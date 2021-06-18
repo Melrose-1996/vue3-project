@@ -1,16 +1,19 @@
 <template>
   <div class="App-container">
-    <!-- 修改用户信息，测试持久化 -->
-    App {{ $store.state.user.profile.account }}
-    <button @click="$store.commit('user/setUser', { account: 'zhousg' })">
-      修改用户信息
-    </button>
+    App <button @click="fn">测试 request 工具函数</button>
   </div>
 </template>
 
 <script>
+import request from '@/utils/request'
 export default {
   name: 'App',
-  setup() {}
+  setup() {
+    const fn = () => {
+      // 测试请求
+      request('/member/profile', 'get', { a: 10 })
+    }
+    return { fn }
+  }
 }
 </script>
