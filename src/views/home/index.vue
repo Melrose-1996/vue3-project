@@ -11,7 +11,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .HomePage-wrapper {
+  @import '../../assets/styles/mixins.less';
 }
 </style>
