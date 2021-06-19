@@ -1,22 +1,8 @@
-// 提取一些共用的代码
-// less 混入
-
-// 类选择器混入 - 这种混入有个缺陷，就是样式都会编译出来，即两段代码都会显示出来
-.abc {
-  width: 100px;
-  height: 100px;
-}
-
-.box {
-  .abc();
-}
-
-// 函数混入,只会编译 .box
-.abc (@width) {
-  width: @width;
-  height: @width;
-}
-
-.box {
-  .abc(100px);
+// 鼠标经过上移阴影动画
+.hoverShadow () {
+  transition: all 0.5s;
+  &:hover {
+    transform: translate3d(0, -3px, 0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  }
 }

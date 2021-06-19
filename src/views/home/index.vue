@@ -1,5 +1,5 @@
 <template>
-  <div class="HomePage-wrapper">
+  <div class="HomePage-wrapper container">
     HomePage
   </div>
 </template>
@@ -12,7 +12,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.HomePage-wrapper {
-  @import '../../assets/styles/mixins.less';
+.HomePage-wrapper.container {
+  .hoverShadow();
 }
 </style>
