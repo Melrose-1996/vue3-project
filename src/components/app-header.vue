@@ -2,7 +2,7 @@
   <header class="app-header">
     <div class="container">
       <h1 class="logo"><RouterLink to="/">小兔鲜</RouterLink></h1>
-      <ul class="navs">
+      <!-- <ul class="navs">
         <li class="home"><RouterLink to="/">首页</RouterLink></li>
         <li><a href="#">美食</a></li>
         <li><a href="#">餐厨</a></li>
@@ -13,7 +13,9 @@
         <li><a href="#">孕婴</a></li>
         <li><a href="#">服装</a></li>
         <li><a href="#">杂货</a></li>
-      </ul>
+      </ul> -->
+      <!-- 使用组件 -->
+      <app-heaer-nav />
       <div class="search">
         <i class="iconfont icon-search"></i>
         <input type="text" placeholder="搜一搜" />
@@ -28,7 +30,9 @@
 </template>
 
 <script>
+import appHeaerNav from './app-heaer-nav.vue'
 export default {
+  components: { appHeaerNav },
   name: 'AppHeader'
 }
 </script>
@@ -48,29 +52,6 @@ export default {
       width: 100%;
       text-indent: -9999px;
       background: url(../assets/images/logo.png) no-repeat center 18px / contain;
-    }
-  }
-  .navs {
-    width: 820px;
-    display: flex;
-    justify-content: space-around;
-    padding-left: 40px;
-    li {
-      margin-right: 40px;
-      width: 38px;
-      text-align: center;
-      a {
-        font-size: 16px;
-        line-height: 32px;
-        height: 32px;
-        display: inline-block;
-      }
-      &:hover {
-        a {
-          color: @xtxColor;
-          border-bottom: 1px solid @xtxColor;
-        }
-      }
     }
   }
   .search {
