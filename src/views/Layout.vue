@@ -35,8 +35,8 @@ export default {
 
 <style lang="less" scoped>
 .Layout-wrapper {
-  .main {
-    min-height: 600px;
-  }
+  // .main {
+  //   min-height: 600px;
+  // }
 }
 </style>
