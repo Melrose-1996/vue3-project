@@ -18,14 +18,19 @@
 import appNavbar from '@/components/app-navbar.vue'
 import AppHeader from '@/components/app-header.vue'
 import AppFooter from '@/components/app-footer.vue'
+import { useStore } from 'vuex'
 export default {
   components: { appNavbar, AppHeader, AppFooter },
   name: 'Layout',
-  setup() {}
+  // 获取下拉分类数据
+  setup() {
+    const store = useStore()
+    store.dispatch('category/getLCategoryList')
+  }
 }
 </script>
 
 <style scoped>
-.Layout-wrapper {
-}
+/* .Layout-wrapper {
+} */
 </style>
