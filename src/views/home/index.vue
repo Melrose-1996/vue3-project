@@ -20,6 +20,6 @@ export default {
 
 <style lang="less" scoped>
 .container {
-  .hoverShadow();
+  // .hoverShadow();
 }
 </style>
