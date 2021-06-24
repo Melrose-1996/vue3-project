@@ -5,15 +5,18 @@
         <xtx-more path="/" />
       </template>
       <!-- 面板内容 -->
-      <ul class="goods-list">
-        <li v-for="item in goods" :key="item.id">
-          <RouterLink :to="`/product/${item.id}`">
-            <img :src="item.picture" alt="" />
-            <p class="name ellipsis">{{ item.name }}</p>
-            <p class="price">&yen;{{ item.price }}</p>
-          </RouterLink>
-        </li>
-      </ul>
+      <transition name="fade">
+        <ul v-if="goods.length" class="goods-list">
+          <li v-for="item in goods" :key="item.id">
+            <RouterLink :to="`/product/${item.id}`">
+              <img :src="item.picture" alt="" />
+              <p class="name ellipsis">{{ item.name }}</p>
+              <p class="price">&yen;{{ item.price }}</p>
+            </RouterLink>
+          </li>
+        </ul>
+        <home-skeleton bg="#f0f9f4" v-else />
+      </transition>
     </home-panel>
   </div>
 </template>
@@ -22,9 +25,10 @@
 import { ref } from 'vue'
 import HomePanel from './home-panel.vue'
 import { findNew } from '@/api/home'
+import HomeSkeleton from './home-skeleton.vue'
 export default {
   name: 'HomeNew',
-  components: { HomePanel },
+  components: { HomePanel, HomeSkeleton },
   setup() {
     const goods = ref([])
     findNew().then(data => {
@@ -37,6 +41,27 @@ export default {
 
 <style lang="less" scoped>
 .home-new-wrapper {
+  // // 离开时候展示动画
+  // // 注意这段样式需要重复利用 assets/styles/common.less
+  // .fade {
+  //   // .fade-leave 此时没有任何的样式
+  //   &-leave {
+  //     // .fade-leave-active
+  //     &-active {
+  //       // 当离开的时，使用绝对定位
+  //       position: absolute;
+  //       // 定位之后无宽度
+  //       width: 100%;
+  //       // 动画 .5s 延迟 .2s
+  //       transition: opacity 0.5s 0.2s;
+  //       // 希望贴在数据边上
+  //       z-index: 1;
+  //     }
+  //     &-to {
+  //       opacity: 0;
+  //     }
+  //   }
+  // }
   .goods-list {
     display: flex;
     justify-content: space-between;

@@ -1,21 +1,22 @@
+/* css3盒子模型 */
 * {
-  /* css3盒子模型 */
-  box-sizing: border-box;
   /* 去掉轮播图 Chrome 浏览器的错误警告 */
+  box-sizing: border-box;
   touch-action: pan-y;
 }
 html {
   height: 100%;
   font-size: 14px;
 }
+/* CSS3 抗锯齿形 让文字显示的更加清晰 */
 body {
-  /* CSS3 抗锯齿形 让文字显示的更加清晰 */
   -webkit-font-smoothing: antialiased;
   height: 100%;
   color: #333;
   min-width: 1240px;
   font: 12px/1.5 Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB, '\5B8B\4F53', sans-serif;
 }
+/* 把我们所有标签的内外边距清零 */
 ul,
 h1,
 h3,
@@ -23,7 +24,6 @@ h4,
 p,
 dl,
 dd {
-  /* 把我们所有标签的内外边距清零 */
   padding: 0;
   margin: 0;
 }
@@ -137,4 +137,13 @@ input[type='checkbox']::placeholder {
 }
 .clearfix {
   *zoom: 1;
+}
+.fade-leave-active {
+  position: absolute;
+  width: 100%;
+  transition: opacity 0.5s 0.2s;
+  z-index: 1;
+}
+.fade-leave-to {
+  opacity: 0;
 }
