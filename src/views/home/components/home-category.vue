@@ -1,33 +1,18 @@
 <template>
   <div class="home-category" @mouseleave="categoryId = null">
     <ul class="menu">
-      <li
-        v-for="item in menuList"
-        :key="item.id"
-        :class="{ active: categoryId === item.id }"
-        @mouseenter="categoryId = item.id"
-      >
+      <li v-for="item in menuList" :key="item.id" :class="{ active: categoryId === item.id }" @mouseenter="categoryId = item.id">
         <!-- 一级类目 -->
         <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
         <!-- 二级类目 -->
         <!-- 注意初始化值的时候可能是没有二级类目的，如果直接去遍历的话，可能会报错 -->
         <template v-if="item.children">
-          <RouterLink
-            v-for="sub in item.children"
-            :key="sub.id"
-            :to="`/category/sub/${sub.id}`"
-            >{{ sub.name }}</RouterLink
-          >
+          <RouterLink v-for="sub in item.children" :key="sub.id" :to="`/category/sub/${sub.id}`">{{ sub.name }}</RouterLink>
           <!-- <RouterLink to="/">清洁</RouterLink> -->
         </template>
         <template v-else>
           <!-- 骨架 -->
-          <XtxSkeleton
-            width="60px"
-            height="18px"
-            style="margin-right:5px"
-            bg="rgba(255,255,255,0.2)"
-          />
+          <XtxSkeleton width="60px" height="18px" style="margin-right:5px" bg="rgba(255,255,255,0.2)" />
           <XtxSkeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)" />
         </template>
       </li>
@@ -57,9 +42,7 @@
           <RouterLink to="/">
             <img :src="brand.picture" alt="" />
             <div class="info">
-              <p class="place">
-                <i class="iconfont icon-dingwei"></i>{{ brand.place }}
-              </p>
+              <p class="place"><i class="iconfont icon-dingwei"></i>{{ brand.place }}</p>
               <p class="name ellipsis">{{ brand.name }}</p>
               <p class="desc ellipsis-2">{{ brand.desc }}</p>
             </div>

@@ -3,7 +3,7 @@
     <HomePanel :title="cate.name" v-for="cate in list" :key="cate.id">
       <template v-slot:right>
         <div class="sub">
-          <RouterLink v-for="sub in cate.children" :key="sub.id" :to="`/category/sub/${sub.id}`">海鲜</RouterLink>
+          <RouterLink v-for="sub in cate.children" :key="sub.id" :to="`/category/sub/${sub.id}`">{{ sub.name }}</RouterLink>
           <!-- <RouterLink to="/">水果</RouterLink>
           <RouterLink to="/">蔬菜</RouterLink>
           <RouterLink to="/">水产</RouterLink>
@@ -13,7 +13,7 @@
       </template>
       <div class="box">
         <RouterLink class="cover" :to="`/category/${id}`">
-          <img :src="cate.picture" alt="" />
+          <img v-lazy="cate.picture" alt="" />
           <strong class="label">
             <span>{{ cate.name }}</span>
             <span>{{ cate.saleInfo }}</span>
