@@ -6,7 +6,6 @@ export default {
   state() {
     return {
       // 分类信息集合，依赖 topCategory 重新设置，保证初始化就要数据，不至于白屏
-
       categoryList: topCategory.map(item => ({ name: item }))
     }
   },
