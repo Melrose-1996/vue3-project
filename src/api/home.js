@@ -15,7 +15,7 @@ export const findBrand = (limit = 6) => {
  * @param {type}
  * @return:
  */
-export const findBaner = () => {
+export const findBanner = () => {
   return request('/home/banner', 'get')
 }
 

@@ -12,15 +12,18 @@
   <home-new />
   <!-- 人气推荐 -->
   <home-hot />
+  <!-- 品牌组件 -->
+  <home-brand />
 </template>
 
 <script>
 import HomeBanner from './components/home-banner.vue'
+import HomeBrand from './components/home-brand.vue'
 import homeCategory from './components/home-category.vue'
 import HomeHot from './components/home-hot.vue'
 import HomeNew from './components/home-new.vue'
 export default {
-  components: { homeCategory, HomeBanner, HomeNew, HomeHot },
+  components: { homeCategory, HomeBanner, HomeNew, HomeHot, HomeBrand },
   name: 'HomePage'
 }
 </script>

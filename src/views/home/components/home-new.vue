@@ -4,37 +4,42 @@
       <template #right>
         <xtx-more path="/" />
       </template>
-      <!-- 面板内容 -->
-      <transition name="fade">
-        <ul v-if="goods.length" class="goods-list">
-          <li v-for="item in goods" :key="item.id">
-            <RouterLink :to="`/product/${item.id}`">
-              <img :src="item.picture" alt="" />
-              <p class="name ellipsis">{{ item.name }}</p>
-              <p class="price">&yen;{{ item.price }}</p>
-            </RouterLink>
-          </li>
-        </ul>
-        <home-skeleton bg="#f0f9f4" v-else />
-      </transition>
+      <div style="position: relative;height: 426px;" ref="target">
+        <!-- 面板内容 -->
+        <transition name="fade">
+          <ul v-if="goods.length" class="goods-list">
+            <li v-for="item in goods" :key="item.id">
+              <RouterLink :to="`/product/${item.id}`">
+                <img :src="item.picture" alt="" />
+                <p class="name ellipsis">{{ item.name }}</p>
+                <p class="price">&yen;{{ item.price }}</p>
+              </RouterLink>
+            </li>
+          </ul>
+          <home-skeleton bg="#f0f9f4" v-else />
+        </transition>
+      </div>
     </home-panel>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 import HomePanel from './home-panel.vue'
 import { findNew } from '@/api/home'
 import HomeSkeleton from './home-skeleton.vue'
+import { useLazyData } from '@/hooks'
 export default {
   name: 'HomeNew',
   components: { HomePanel, HomeSkeleton },
   setup() {
-    const goods = ref([])
-    findNew().then(data => {
-      goods.value = data.result
-    })
-    return { goods }
+    // const goods = ref([])
+    // findNew().then(data => {
+    //   goods.value = data.result
+    // })
+    // 1. target 去绑定一个监听对象，最好的 DOM
+    // 2. 传入 API 函数，内部获取调用，放回的就是响应式数据
+    const { target, result } = useLazyData(findNew)
+    return { goods: result, target }
   }
 }
 </script>

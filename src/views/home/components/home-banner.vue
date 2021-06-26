@@ -6,14 +6,14 @@
 </template>
 
 <script>
-import { findBaner } from '@/api/home'
+import { findBanner } from '@/api/home'
 import { ref } from 'vue'
 export default {
   name: 'HomeBanner',
   setup() {
     // 获取轮播图数据
     const sliders = ref([])
-    findBaner().then(data => {
+    findBanner().then(data => {
       sliders.value = data.result
     })
     return { sliders }
