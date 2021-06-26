@@ -45,3 +45,12 @@ export const findHot = () => {
 export const findGoods = () => {
   return request('/home/goods', 'get')
 }
+
+/**
+ * @description: 获取最新专题
+ * @param {type} null
+ * @return: Promise
+ */
+export const findSpecial = () => {
+  return request('/home/special', 'get')
+}
