@@ -21,6 +21,11 @@ export const useLazyData = apiFn => {
           result.value = data.result
         })
       }
+    },
+    // 配置选项
+    {
+      // 临界值的比例大于0的时候触发
+      threshold: 0
     }
   )
   return { target, result }
