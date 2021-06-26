@@ -1,41 +1,20 @@
-<template>
-  <div class="xtx-bread">
-    <div class="xtx-bread-item">
-      <RouterLink to="/">首页</RouterLink>
-    </div>
-    <i class="iconfont icon-angle-right"></i>
-    <template v-if="parentName">
-      <div class="xtx-bread-item">
-        <RouterLink v-if="parentPath" :to="parentPath">{{ parentName }}</RouterLink>
-        <span v-else>{{ parentName }}</span>
-      </div>
-      <i class="iconfont icon-angle-right"></i>
-    </template>
-    <div class="xtx-bread-item">
-      <span><slot /></span>
-    </div>
-  </div>
-</template>
-
 <script>
+import { h } from 'vue'
 export default {
   name: 'XtxBread',
-  props: {
-    // 父级类目路径
-    parentPath: {
-      type: [String, Object],
-      default: '/'
-    },
-    // 父级类目名称
-    parentName: {
-      type: String,
-      default: ''
-    }
+  render() {
+    const items = this.$slots.default()
+    const dymanicItems = []
+    items.forEach((item, i) => {
+      dymanicItems.push(item)
+      if (i < items.length - 1) dymanicItems.push(h('i', { class: 'iconfont icon-angle-right' }))
+    })
+    return h('div', { class: 'xtx-bread' }, dymanicItems)
   }
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 .xtx-bread {
   display: flex;
   padding: 25px 10px;
