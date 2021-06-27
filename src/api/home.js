@@ -12,7 +12,7 @@ export const findBrand = (limit = 6) => {
 
 /**
  * @description: 获取广告区轮播图
- * @param {type} null
+ * @param {null}
  * @return: Promise
  */
 export const findBanner = () => {
@@ -21,7 +21,7 @@ export const findBanner = () => {
 
 /**
  * @description: 获取新鲜好物
- * @param {type} null
+ * @param {null}
  * @return: Promise
  */
 export const findNew = () => {
@@ -30,7 +30,7 @@ export const findNew = () => {
 
 /**
  * @description: 获取人气推荐
- * @param {type} null
+ * @param {null}
  * @return: Promise
  */
 export const findHot = () => {
@@ -39,7 +39,7 @@ export const findHot = () => {
 
 /**
  * @description: 获取商品板块
- * @param {type} null
+ * @param {null}
  * @return: Promise
  */
 export const findGoods = () => {
@@ -48,7 +48,7 @@ export const findGoods = () => {
 
 /**
  * @description: 获取最新专题
- * @param {type} null
+ * @param {null}
  * @return: Promise
  */
 export const findSpecial = () => {
