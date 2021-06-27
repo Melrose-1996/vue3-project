@@ -4,7 +4,9 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem>{{ topCategory.name }}</XtxBreadItem>
+        <transition name="fade-right" mode="out-in">
+          <XtxBreadItem :key="topCategory.id">{{ topCategory.name }}</XtxBreadItem>
+        </transition>
       </XtxBread>
       <!-- 轮播图 -->
       <XtxCarousel :sliders="sliders" style="height:500px" />
@@ -56,8 +58,6 @@ export default {
     const store = useStore()
     const route = useRoute()
     const topCategory = computed(() => {
-      // 当前的顶级分类 === 根据路由上的 ID 去 vuex 中的 category 模块的 list 中查找
-      // 计算属性每次要进行数据的判断是否为空
       let cate = {}
       const item = store.state.category.categoryList.find(item => {
         return item.id === route.params.id
@@ -65,12 +65,6 @@ export default {
       if (item) cate = item
       return cate
     })
-
-    // 获取各个子类目下推荐商品
-    // 注意如果是这样，只会渲染一次
-    // findTopCategory(route.params.id).then(data => {
-    //   subList.value = data.result.children
-    // })
     const subList = ref([])
     const getSubList = () => {
       findTopCategory(route.params.id).then(data => {
@@ -80,7 +74,6 @@ export default {
     watch(
       () => route.params.id,
       newVal => {
-        // 可能从无值到有值，也有可能有值到无值，而无值的时候并不需要触发请求
         newVal && getSubList()
       },
       { immediate: true }
