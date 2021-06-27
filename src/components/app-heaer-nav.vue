@@ -2,16 +2,10 @@
   <div class="app-heaer-nav-wrapper">
     <ul class="navs">
       <li class="home"><RouterLink to="/">首页</RouterLink></li>
-      <li
-        v-for="item in list"
-        :key="item.id"
-        @mouseenter="show(item)"
-        @mouseleave="hide(item)"
-      >
+      <!-- 当 mouseenter 的有可能出现跳转页面顶部的时候刚好到顶级类目的位置而跳出弹出层，所以改用 mousemove -->
+      <li v-for="item in list" :key="item.id" @mousemove="show(item)" @mouseleave="hide(item)">
         <!-- 一级类名 -->
-        <router-link :to="`/category/${item.id}`" @click="hide(item)">{{
-          item.name
-        }}</router-link>
+        <router-link :to="`/category/${item.id}`" @click="hide(item)">{{ item.name }}</router-link>
         <!-- 二级类名 -->
         <div class="layer" :class="{ open: item.open }">
           <ul>
@@ -68,6 +62,7 @@ export default {
     justify-content: space-around;
     padding-left: 40px;
     position: relative;
+    z-index: 998;
     > li {
       margin-right: 40px;
       width: 38px;

@@ -74,7 +74,9 @@ export default {
     watch(
       () => route.params.id,
       newVal => {
-        newVal && getSubList()
+        // 注意这样的判断条件会让二级类目也触发
+        // 新增判断条件是如果路由跳转的路径 === /category/id 才能证明是一级类目(二级类目是 /category/sub/id)
+        newVal && `/category/${newVal}` === route.path && getSubList()
       },
       { immediate: true }
     )
