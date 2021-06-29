@@ -38,8 +38,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less" scoped>
-.sub-bread-wrapper {
-}
-</style>

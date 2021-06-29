@@ -12,8 +12,8 @@
       </a>
     </div>
     <div class="check">
-      <XtxCheckbox v-model="sortParams.inventory">仅显示有货商品</XtxCheckbox>
-      <XtxCheckbox v-model="sortParams.onlyDiscount">仅显示特惠商品</XtxCheckbox>
+      <XtxCheckbox @change="changeChecked" v-model="sortParams.inventory">仅显示有货商品</XtxCheckbox>
+      <XtxCheckbox @change="changeChecked" v-model="sortParams.onlyDiscount">仅显示特惠商品</XtxCheckbox>
     </div>
   </div>
 </template>
@@ -21,9 +21,7 @@
 import { reactive } from 'vue'
 export default {
   name: 'SubSort',
-  setup() {
-    // 实现交互(实现交换的数据和后台保持一致)
-    // 1. 明确交换数据
+  setup(props, { emit }) {
     const sortParams = reactive({
       inventory: false,
       onlyDiscount: false,
@@ -33,22 +31,25 @@ export default {
     const changeSore = sort => {
       if (sort === 'price') {
         sortParams.sortField = sort
-        // 处理排序
         if (sortParams.sortMethod === null) {
           sortParams.sortMethod = 'desc'
         } else {
           sortParams.sortMethod = sortParams.sortMethod === 'desc' ? 'asc' : 'desc'
         }
       } else {
-        // 如果已经选择阻止运行
         if (sortParams.sortField === sort) return
         sortParams.sortField = sort
         sortParams.sortMethod = null
       }
+      // 点击筛选条件，触发 sort-change 事件
+      emit('sort-change', sortParams)
     }
-    // 2. 提供模板使用
-    // 3. 需要绑定按钮的点击事件修改排序字段和排序方式
-    return { sortParams, changeSore }
+    // 点击复选框，触发 sort-change 事件
+    const changeChecked = () => {
+      // sortParams 已经是响应式
+      emit('sort-change', sortParams)
+    }
+    return { sortParams, changeSore, changeChecked }
   }
 }
 </script>

@@ -4,11 +4,12 @@
       <!-- 面包屑 -->
       <sub-bread />
       <!-- 筛选区 -->
-      <sub-filter />
+      <sub-filter @filter-change="filterChange" />
       <!-- 商品面板（排序 + 列表） -->
       <div class="goods-list">
         <!-- 排序组件 -->
-        <sub-sort />
+        <!-- 这里不需要加(),需要接收它的默认传参 -->
+        <sub-sort @sort-change="sortChange" />
         <!-- 列表组件 -->
         <ul>
           <li v-for="goods in goodList" :key="goods.id">
@@ -37,50 +38,54 @@ export default {
   name: 'subCategory',
   setup() {
     const route = useRoute()
-    // 加载中
     const loading = ref(false)
-    // 是否加载完毕
     const finished = ref(false)
-    // 商品列表数据
     const goodList = ref([])
-    // 请求参数
-    const reqParams = {
+    let reqParams = {
       page: 1,
       pageSize: 20
     }
     const getData = () => {
       loading.value = true
-      // 设置二级分类的 ID
       reqParams.categoryId = route.params.id
       findSubCategoryGoods(reqParams).then(({ result }) => {
-        // 获取数据成功
         if (result.items.length) {
           goodList.value.push(...result.items)
-          // 把 page 改成下一页页码
           reqParams.page++
         } else {
-          // 没有数据，代表加载完成
           finished.value = true
         }
         loading.value = false
       })
     }
-    // 在更改了二级分类的时候需要重新加载数据
     watch(
       () => route.params.id,
       newVal => {
         if (newVal && `/category/sub/${newVal}` === route.path) {
-          // 结束指示设置为 false
           finished.value = false
-          // 数组置空，由于是空数组，列表没有数据，所以 loading 组件默认就上来了，直接触发事件发起请求
           goodList.value = []
-          // 重置 page
           reqParams.page = 1
         }
       },
       {}
     )
-    return { getData, loading, finished, goodList }
+    // 1. 更改排序组件的筛选数据，重新请求数据
+    const sortChange = sortParams => {
+      finished.value = false
+      goodList.value = []
+      // 合并请求参数，保留之前的参数
+      reqParams = { ...reqParams, ...sortParams }
+      reqParams.page = 1
+    }
+    // 2. 更改筛选组件的筛选数据，重新请求数据
+    const filterChange = filterParams => {
+      finished.value = false
+      goodList.value = []
+      // 合并请求参数，保留之前的参数
+      reqParams = { ...reqParams, ...filterParams }
+      reqParams.page = 1
+    }
+    return { getData, loading, finished, goodList, sortChange, filterChange }
   }
 }
 </script>
