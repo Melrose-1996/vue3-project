@@ -12,12 +12,13 @@
       <div class="goods-info">
         <div class="media">
           <goods-image :images="goods.mainPictures" />
+          <goods-sales />
         </div>
-        <div class="spec"></div>
+        <div class="spec">
+          <goods-name :goods="goods" />
+        </div>
       </div>
       <!-- 商品推荐 -->
-      <!-- 例如加载完 goods 数据之后，第二次 id 发生变化之后，再次加载数据，重新给 goods.value 又附了值，但是这个时候该组件并不会初始化，如果需要更新，每次都需要加个 watch -->
-      <!-- <GoodsRelevant v-if="goods" /> -->
       <GoodsRelevant />
       <!-- 商品详情 -->
       <div class="goods-footer">
@@ -40,9 +41,11 @@ import GoodsRelevant from './components/goods-relevant'
 import { findGoods } from '@/api/product'
 import { useRoute } from 'vue-router'
 import GoodsImage from './components/goods-image.vue'
+import GoodsSales from './components/goods-sales.vue'
+import GoodsName from './components/goods-name.vue'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
   setup() {
     // 1. 获取商品详情，进行渲染
     const goods = useGoods()
