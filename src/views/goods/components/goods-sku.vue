@@ -62,15 +62,34 @@ const updateDisabledStatus = (specs, pathMap) => {
   })
 }
 
+// 默认选中
+const initDefaultSelected = (goods, skuId) => {
+  // 1. 找出 sku 信息
+  // 2. 遍历每一个按钮，按钮的值和 sku 记录的值相同
+  const sku = goods.skus.find(sku => sku.id === skuId)
+  goods.specs.forEach((item, i) => {
+    const val = item.values.find(val => val.name === sku.specs[i].valueName)
+    val.selected = true
+  })
+}
+
 export default {
   name: 'GoodsSku',
   props: {
     goods: {
       type: Object,
       default: () => ({})
+    },
+    skuId: {
+      type: String,
+      default: ''
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
+    // 根据 skuId 初始化选中
+    if (props.skuId) {
+      initDefaultSelected(props.goods, props.skuId)
+    }
     const pathMap = getPathMap(props.goods.skus)
     // ☆组件初始化：更新按钮禁用状态
     updateDisabledStatus(props.goods.specs, pathMap)
@@ -88,6 +107,28 @@ export default {
       }
       // ☆点击按钮时：更新按钮禁用状态
       updateDisabledStatus(props.goods.specs, pathMap)
+      // 将选择的 sku 信息传递给父组件 {skuId, price, oldPrice, inventory, specsText}
+      // 1. 这里只有选择完整的 sku 组合按钮之后才能传递给父组件信息
+      // 2. 不是完整的 sku 组合按钮，提交空对象给父组件
+      const validSelectedValues = getSelectedValues(props.goods.specs).filter(val => val)
+      if (validSelectedValues.length === props.goods.specs.length) {
+        // 取出 spu 信息，在路径字典里面存储了 skuIds ，根据 value 找到对应的 Id 数组
+        const skuIds = pathMap[validSelectedValues.join(spliter)]
+        // 通过有且只有一个 id ，找到包含完整规格的数据
+        const sku = props.goods.skus.find(sku => sku.id === skuIds[0])
+        emit('change', {
+          skuId: sku.id,
+          price: sku.price,
+          oldPrice: sku.oldPrice,
+          inventory: sku.inventory,
+          // 属性名: 属性值 属性名1: 属性值1 ... 这样的字符串
+          // 两个参数，第一个遍历时候的回调函数(参数1:上一个回合的值, 参数2:当前回合的值) 第二个是起始累加的值
+          specsText: sku.specs.reduce((p, n) => `${p} ${n.name}：${n.valueName}`, '').replace(' ', '')
+        })
+      } else {
+        // 父组件需要判断是否规格选择完整，不完整不能加购物车
+        emit('change', {})
+      }
     }
     return { selectSku, pathMap }
   }

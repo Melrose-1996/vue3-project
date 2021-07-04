@@ -17,7 +17,7 @@
         <div class="spec">
           <goods-name :goods="goods" />
           <!-- sku 组件 -->
-          <goods-sku :goods="goods" />
+          <goods-sku :goods="goods" skuId="1369155872197971970" @change="changeSku" />
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -25,7 +25,7 @@
       <!-- 商品详情 -->
       <div class="goods-footer">
         <div class="goods-article">
-          <!-- 商品+评价 -->
+          <!-- 商品评价 -->
           <div class="goods-tabs"></div>
           <!-- 注意事项 -->
           <div class="goods-warn"></div>
@@ -52,8 +52,16 @@ export default {
   setup() {
     // 1. 获取商品详情，进行渲染
     const goods = useGoods()
-
-    return { goods }
+    // sku 组件给父组件传的值
+    const changeSku = sku => {
+      // 修改商品的现价原价和库存信息
+      if (sku.skuId) {
+        goods.value.price = sku.price
+        goods.value.oldPrice = sku.oldPrice
+        goods.value.inventory = sku.inventory
+      }
+    }
+    return { goods, changeSku }
   }
 }
 // 获取商品详情 - 把该函数剥离出来，防止 setup 过于冗余
