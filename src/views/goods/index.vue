@@ -30,7 +30,7 @@
       <div class="goods-footer">
         <div class="goods-article">
           <!-- 商品评价 -->
-          <div class="goods-tabs"></div>
+          <goods-tabs />
           <!-- 注意事项 -->
           <div class="goods-warn"></div>
         </div>
@@ -52,9 +52,10 @@ import GoodsName from './components/goods-name.vue'
 import GoodsSku from './components/goods-sku.vue'
 import XtxNumbox from '@/components/library/xtx-numbox.vue'
 import XtxButton from '@/components/library/xtx-button.vue'
+import GoodsTabs from './components/goods-tabs.vue'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox, XtxButton },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox, XtxButton, GoodsTabs },
   setup() {
     // 1. 获取商品详情，进行渲染
     const goods = useGoods()
@@ -128,10 +129,10 @@ const useGoods = () => {
     min-height: 1000px;
   }
 }
-.goods-tabs {
-  min-height: 600px;
-  background: #fff;
-}
+// .goods-tabs {
+//   min-height: 600px;
+//   background: #fff;
+// }
 .goods-warn {
   min-height: 600px;
   background: #fff;
