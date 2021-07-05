@@ -20,6 +20,8 @@
           <goods-sku :goods="goods" @change="changeSku" />
           <!-- 数量选择组件 -->
           <xtx-numbox v-model="num" :max="goods.inventory" label="数量" />
+          <!-- 按钮组件 -->
+          <xtx-button type="primary" style="margin-top: 20px">加入购物车</xtx-button>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -49,9 +51,10 @@ import GoodsSales from './components/goods-sales.vue'
 import GoodsName from './components/goods-name.vue'
 import GoodsSku from './components/goods-sku.vue'
 import XtxNumbox from '@/components/library/xtx-numbox.vue'
+import XtxButton from '@/components/library/xtx-button.vue'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox, XtxButton },
   setup() {
     // 1. 获取商品详情，进行渲染
     const goods = useGoods()
