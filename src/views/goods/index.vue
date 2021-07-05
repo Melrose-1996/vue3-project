@@ -16,8 +16,10 @@
         </div>
         <div class="spec">
           <goods-name :goods="goods" />
-          <!-- sku 组件 -->
-          <goods-sku :goods="goods" skuId="1369155872197971970" @change="changeSku" />
+          <!-- sku 组件 skuId="1369155872197971970" 测试选中 -->
+          <goods-sku :goods="goods" @change="changeSku" />
+          <!-- 数量选择组件 -->
+          <xtx-numbox v-model="num" :max="goods.inventory" label="数量" />
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -46,9 +48,10 @@ import GoodsImage from './components/goods-image.vue'
 import GoodsSales from './components/goods-sales.vue'
 import GoodsName from './components/goods-name.vue'
 import GoodsSku from './components/goods-sku.vue'
+import XtxNumbox from '@/components/library/xtx-numbox.vue'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox },
   setup() {
     // 1. 获取商品详情，进行渲染
     const goods = useGoods()
@@ -61,7 +64,10 @@ export default {
         goods.value.inventory = sku.inventory
       }
     }
-    return { goods, changeSku }
+
+    // 选择的数量
+    const num = ref(1)
+    return { goods, changeSku, num }
   }
 }
 // 获取商品详情 - 把该函数剥离出来，防止 setup 过于冗余
