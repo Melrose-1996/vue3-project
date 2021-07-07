@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, provide, ref, watch } from 'vue'
 import GoodsRelevant from './components/goods-relevant'
 import { findGoods } from '@/api/product'
 import { useRoute } from 'vue-router'
@@ -72,7 +72,9 @@ export default {
         goods.value.inventory = sku.inventory
       }
     }
-
+    // 提供 goods 数据给后代组件使用
+    provide('goods', goods)
+    console.log('+++++++++++++++++++')
     // 选择的数量
     const num = ref(1)
     return { goods, changeSku, num }

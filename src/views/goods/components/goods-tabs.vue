@@ -2,7 +2,9 @@
   <div class="goods-tabs">
     <nav>
       <a @click="activeName = 'GoodsDetail'" :class="{ active: activeName === 'GoodsDetail' }" href="javascript:;">商品详情</a>
-      <a @click="activeName = 'GoodsComment'" :class="{ active: activeName === 'GoodsComment' }" href="javascript:;">商品评价<span>(500+)</span></a>
+      <a @click="activeName = 'GoodsComment'" :class="{ active: activeName === 'GoodsComment' }" href="javascript:;"
+        >商品评价<span>({{ goods.commentCount }})</span></a
+      >
     </nav>
     <!-- 切换内容的地方 -->
     <!-- 在 vue 中动态的去切换组件，其实可以使用动态的 component 组件 -->
@@ -14,16 +16,18 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import goodsDetail from './goods-detail.vue'
+import { ref, inject } from 'vue'
+import GoodsDetail from './goods-detail.vue'
 import GoodsComment from './goods-comment.vue'
 export default {
-  components: { goodsDetail, GoodsComment },
+  components: { GoodsDetail, GoodsComment },
   name: 'goodsTabs',
   setup() {
     // actvieName 的值: GoodsDetail GoodsComment
     const activeName = ref('GoodsDetail')
-    return { activeName }
+    // godds 详情数据的数目
+    const goods = inject('goods')
+    return { activeName, goods }
   }
 }
 </script>
