@@ -20,3 +20,14 @@ export const findGoods = id => {
 export const findRelevantGoods = ({ id, limit = 16 }) => {
   return request('/goods/relevant', 'get', { id, limit })
 }
+
+/**
+ * @description: 获取热销榜
+ * @param {String} id - 商品ID
+ * @param {Integer} limit - 商品数量
+ * @param {Integer} type - 1代表24小时热销榜 2代表周热销榜 3代表总热销榜
+ * @return:
+ */
+export const findGoodsHot = ({ id, limit = 3, type = 1 }) => {
+  return request('/goods/hot', 'get', { id, limit, type })
+}

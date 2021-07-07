@@ -34,8 +34,11 @@
           <!-- 注意事项 -->
           <div class="goods-warn"></div>
         </div>
-        <!-- 24热榜+专题推荐 -->
-        <div class="goods-aside"></div>
+        <!-- 24热榜+周热销榜 -->
+        <div class="goods-aside">
+          <goods-hot />
+          <goods-hot :type="2" />
+        </div>
       </div>
     </div>
   </div>
@@ -53,9 +56,10 @@ import GoodsSku from './components/goods-sku.vue'
 import XtxNumbox from '@/components/library/xtx-numbox.vue'
 import XtxButton from '@/components/library/xtx-button.vue'
 import GoodsTabs from './components/goods-tabs.vue'
+import GoodsHot from './components/goods-hot.vue'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox, XtxButton, GoodsTabs },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox, XtxButton, GoodsTabs, GoodsHot },
   setup() {
     // 1. 获取商品详情，进行渲染
     const goods = useGoods()
@@ -129,10 +133,10 @@ const useGoods = () => {
     min-height: 1000px;
   }
 }
-// .goods-tabs {
-//   min-height: 600px;
-//   background: #fff;
-// }
+.goods-tabs {
+  min-height: 600px;
+  background: #fff;
+}
 .goods-warn {
   min-height: 600px;
   background: #fff;

@@ -1,17 +1,15 @@
 <template>
-  <div class="container">
-    <div class="goods-tabs">
-      <nav>
-        <a @click="activeName = 'GoodsDetail'" :class="{ active: activeName === 'GoodsDetail' }" href="javascript:;">商品详情</a>
-        <a @click="activeName = 'GoodsComment'" :class="{ active: activeName === 'GoodsComment' }" href="javascript:;">商品评价<span>(500+)</span></a>
-      </nav>
-      <!-- 切换内容的地方 -->
-      <!-- 在 vue 中动态的去切换组件，其实可以使用动态的 component 组件 -->
-      <!-- is 属性用来决定 component 动态组件渲染为哪个组件，组件的名称 -->
-      <!-- <goods-detail v-if="activeName === 'GoodsDetail'" />
+  <div class="goods-tabs">
+    <nav>
+      <a @click="activeName = 'GoodsDetail'" :class="{ active: activeName === 'GoodsDetail' }" href="javascript:;">商品详情</a>
+      <a @click="activeName = 'GoodsComment'" :class="{ active: activeName === 'GoodsComment' }" href="javascript:;">商品评价<span>(500+)</span></a>
+    </nav>
+    <!-- 切换内容的地方 -->
+    <!-- 在 vue 中动态的去切换组件，其实可以使用动态的 component 组件 -->
+    <!-- is 属性用来决定 component 动态组件渲染为哪个组件，组件的名称 -->
+    <!-- <goods-detail v-if="activeName === 'GoodsDetail'" />
       <goods-comment v-if="activeName === 'GoodsComment'" /> -->
-      <component :is="activeName"></component>
-    </div>
+    <component :is="activeName"></component>
   </div>
 </template>
 
