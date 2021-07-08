@@ -33,7 +33,7 @@ instance.interceptors.response.use(
   }
 )
 // 请求工具函数
-export default (url, method, submitData) => {
+export default (url, method = 'get', submitData) => {
   return instance({
     url,
     method,
