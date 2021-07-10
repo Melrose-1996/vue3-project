@@ -4,14 +4,14 @@
       <ul>
         <template v-if="profile.token">
           <li>
-            <a href="javascript:;"
-              ><i class="iconfont icon-user"></i>{{ profile.account }}</a
-            >
+            <a href="javascript:;"><i class="iconfont icon-user"></i>{{ profile.account }}</a>
           </li>
-          <li><a href="javascript:;">退出登录</a></li>
+          <!-- <li><a href="javascript:;">退出登录</a></li> -->
+          <li><router-link to="/login">退出登录</router-link></li>
         </template>
         <template v-else>
-          <li><a href="javascript:;">请先登录</a></li>
+          <!-- <li><a href="javascript:;">请先登录</a></li> -->
+          <li><router-link to="/login">请先登录</router-link></li>
           <li><a href="javascript:;">免费注册</a></li>
         </template>
         <li><a href="javascript:;">我的订单</a></li>
