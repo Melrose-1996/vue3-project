@@ -26,9 +26,8 @@
         </div>
       </div>
     </div>
-    <div class="sort">
+    <div class="sort" v-if="commitInfo">
       <span>排序：</span>
-
       <a @click="changeSort(null)" href="javascript:;" :class="{ active: reqParams.sortField === null }">默认</a>
       <a @click="changeSort('createTime')" href="javascript:;" :class="{ active: reqParams.sortField === 'createTime' }">最新</a>
       <a @click="changeSort('praiseCount')" href="javascript:;" :class="{ active: reqParams.sortField === 'praiseCount' }">最热</a>
@@ -58,6 +57,8 @@
         </div>
       </div>
     </div>
+    <!-- 分页组件 -->
+    <xtx-pagination v-if="total" :total="total" :page-size="reqParams.pageSize" :current-page="reqParams.page" @current-change="changePager" />
   </div>
 </template>
 
@@ -65,8 +66,9 @@
 import { inject, reactive, ref, watch } from 'vue'
 import { findGoodsCommentInfo, findGoodsCommentList } from '@/api/product'
 import goodsCommentImage from './goods-comment-image.vue'
+import XtxPagination from '@/components/library/xtx-pagination.vue'
 export default {
-  components: { goodsCommentImage },
+  components: { goodsCommentImage, XtxPagination },
   name: 'goodsComment',
   setup() {
     // 获取评价信息
@@ -121,12 +123,18 @@ export default {
     })
 
     const commentList = ref([])
+
+    // 分页的数据
+    // 数据总条数
+    const total = ref(0)
+
     // 初始化需求发请求，筛选条件发生改变发请求
     watch(
       reqParams,
       () => {
         findGoodsCommentList(goods.value.id, reqParams).then(data => {
           commentList.value = data.result.items
+          total.value = data.result.counts
         })
       },
       { immediate: true }
@@ -143,7 +151,12 @@ export default {
       return nickname.substr(0, 1) + '****' + nickname.substr(-1)
     }
 
-    return { commitInfo, currentTagIndex, changeTag, changeSort, reqParams, commentList, formatSpecs, formatNickname }
+    // 实现分页切换
+    const changePager = newPage => {
+      reqParams.page = newPage
+    }
+
+    return { commitInfo, currentTagIndex, changeTag, changeSort, reqParams, commentList, formatSpecs, formatNickname, total, changePager }
   }
 }
 </script>
