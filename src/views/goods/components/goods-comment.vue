@@ -49,6 +49,8 @@
           <div class="text">
             {{ item.content }}
           </div>
+          <!-- 评论图片组件 -->
+          <goods-comment-image v-if="item.pictures.length" :pictures="item.pictures" />
           <div class="time">
             <span>{{ item.createTime }}</span>
             <span class="zan"><i class="iconfont icon-dianzan"></i>{{ item.praiseCount }}</span>
@@ -62,7 +64,9 @@
 <script>
 import { inject, reactive, ref, watch } from 'vue'
 import { findGoodsCommentInfo, findGoodsCommentList } from '@/api/product'
+import goodsCommentImage from './goods-comment-image.vue'
 export default {
+  components: { goodsCommentImage },
   name: 'goodsComment',
   setup() {
     // 获取评价信息
