@@ -67,11 +67,12 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from 'vue'
+import { getCurrentInstance, reactive, ref, watch } from 'vue'
 // 1. 从第三方包里面导入需要校验的组件 Form-form 容器 Field-input 表单元素
 import { Field, Form } from 'vee-validate'
 // 导入校验规则
 import schema from '@/utils/vee-validate-schema'
+// import Message from '@/components/library/Message'
 export default {
   name: 'LoginForm',
   components: { Field, Form },
@@ -98,7 +99,6 @@ export default {
 
     const target = ref(null)
 
-    // 监听 isMsgLogin 还原表单数据(数据，如果用的是 v-show 还需要清除校验结果)
     watch(isMsgLogin, () => {
       // 还原数据
       form.isAgree = true
@@ -106,17 +106,20 @@ export default {
       form.password = null
       form.mobile = null
       form.code = null
-      // 如果是没有销毁 Field 组件，之前的校验结果是不会消除的
-      // Form 组件提供一个 resetForm 函数清除校验结果的方法
-      // 如何调用一个组件的方法 => 通过 ref (ref 写在元素上拿 DOM，写在组件上拿实例，通过实例调用方法)
       target.value.resetForm()
     })
 
-    // 需要在点击登录的时候对整体的表单进行校验
+    // vue3 setup 中提供一个方法拿到 vue 实例
+    // 此时 app 是应用实例，组件实例还是在应用实例中
+    // const app = getCurrentInstance()
+    // proxy 就是当前组件实例
+    const { proxy } = getCurrentInstance()
+
     const login = () => {
-      // Form 组件提供了一个 validate 函数做为整体的表单校验，注意返回的是 Promise
       target.value.validate().then(valid => {
         console.log(valid)
+        // Message({ text: '提示文字错误', type: 'error' })
+        proxy.$message({ text: '1111111111' })
       })
     }
 
