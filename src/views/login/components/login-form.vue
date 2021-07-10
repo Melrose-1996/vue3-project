@@ -4,48 +4,58 @@
       <a @click="isMsgLogin = false" href="javascript:;" v-if="isMsgLogin"> <i class="iconfont icon-user"></i> 使用账号登录 </a>
       <a @click="isMsgLogin = true" href="javascript:;" v-else> <i class="iconfont icon-msg"></i> 使用短信登录 </a>
     </div>
-    <div class="form">
+    <Form ref="target" :validation-schema="schema" v-slot="{ errors }" class="form" autocomplete="off">
       <template v-if="!isMsgLogin">
+        <!-- 校验用户名 -->
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-user"></i>
-            <input type="text" placeholder="请输入用户名" />
+            <Field :class="{ error: errors.account }" v-model="form.account" name="account" type="text" placeholder="请输入用户名" />
           </div>
-          <!-- <div class="error"><i class="iconfont icon-warning" />请输入手机号</div> -->
+          <div class="error" v-if="errors.account"><i class="iconfont icon-warning" />{{ errors.account }}</div>
         </div>
+        <!-- 校验密码 -->
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-lock"></i>
-            <input type="password" placeholder="请输入密码" />
+            <Field :class="{ error: errors.password }" v-model="form.password" name="password" type="password" placeholder="请输入密码" />
           </div>
+          <div class="error" v-if="errors.password"><i class="iconfont icon-warning" />{{ errors.password }}</div>
         </div>
       </template>
       <template v-else>
+        <!-- 校验手机号 -->
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-user"></i>
-            <input type="text" placeholder="请输入手机号" />
+            <Field :class="{ error: errors.mobile }" v-model="form.mobile" name="mobile" type="text" placeholder="请输入手机号" />
           </div>
+          <div class="error" v-if="errors.mobile"><i class="iconfont icon-warning" />{{ errors.mobile }}</div>
         </div>
+        <!-- 短信验证码 -->
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-code"></i>
-            <input type="password" placeholder="请输入验证码" />
+            <Field :class="{ error: errors.code }" v-model="form.code" name="code" type="password" placeholder="请输入验证码" />
             <span class="code">发送验证码</span>
           </div>
+          <div class="error" v-if="errors.code"><i class="iconfont icon-warning" />{{ errors.code }}</div>
         </div>
       </template>
       <div class="form-item">
         <div class="agree">
-          <XtxCheckbox v-model="form.isAgree" />
+          <!-- Field 有个 as 属性，通过该属性可以把 Field 改成组件(注意一定要支持 v-model ) -->
+          <!-- <XtxCheckbox v-model="form.isAgree" /> -->
+          <Field as="XtxCheckbox" name="isAgree" v-model="form.isAgree" />
           <span>我已同意</span>
           <a href="javascript:;">《隐私条款》</a>
           <span>和</span>
           <a href="javascript:;">《服务条款》</a>
         </div>
+        <div class="error" v-if="errors.isAgree"><i class="iconfont icon-warning" />{{ errors.isAgree }}</div>
       </div>
-      <a href="javascript:;" class="btn">登录</a>
-    </div>
+      <a @click="login" href="javascript:;" class="btn">登录</a>
+    </Form>
     <div class="action">
       <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="" />
       <div class="url">
@@ -57,17 +67,60 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+// 1. 从第三方包里面导入需要校验的组件 Form-form 容器 Field-input 表单元素
+import { Field, Form } from 'vee-validate'
+// 导入校验规则
+import schema from '@/utils/vee-validate-schema'
 export default {
   name: 'LoginForm',
+  components: { Field, Form },
   setup() {
     // 切换短信登录
     const isMsgLogin = ref(false)
     // 表单数据对象
     const form = reactive({
-      isAgree: true
+      isAgree: true,
+
+      account: null,
+      password: null,
+      mobile: null,
+      code: null
     })
-    return { isMsgLogin, form }
+
+    const mySchema = {
+      account: schema.account,
+      password: schema.password,
+      mobile: schema.mobile,
+      code: schema.code,
+      isAgree: schema.isAgree
+    }
+
+    const target = ref(null)
+
+    // 监听 isMsgLogin 还原表单数据(数据，如果用的是 v-show 还需要清除校验结果)
+    watch(isMsgLogin, () => {
+      // 还原数据
+      form.isAgree = true
+      form.account = null
+      form.password = null
+      form.mobile = null
+      form.code = null
+      // 如果是没有销毁 Field 组件，之前的校验结果是不会消除的
+      // Form 组件提供一个 resetForm 函数清除校验结果的方法
+      // 如何调用一个组件的方法 => 通过 ref (ref 写在元素上拿 DOM，写在组件上拿实例，通过实例调用方法)
+      target.value.resetForm()
+    })
+
+    // 需要在点击登录的时候对整体的表单进行校验
+    const login = () => {
+      // Form 组件提供了一个 validate 函数做为整体的表单校验，注意返回的是 Promise
+      target.value.validate().then(valid => {
+        console.log(valid)
+      })
+    }
+
+    return { isMsgLogin, form, schema: mySchema, target, login }
   }
 }
 </script>
