@@ -1,6 +1,6 @@
 <template>
   <login-header>联合登录</login-header>
-  <section class="container" v-if="isBind">
+  <section class="container" v-if="!isBind">
     <div class="unbind">
       <div class="loading"></div>
     </div>
@@ -17,10 +17,10 @@
       </a>
     </nav>
     <div class="tab-content" v-if="hasAccount">
-      <callback-bind />
+      <callback-bind :unionId="unionId" />
     </div>
     <div class="tab-content" v-else>
-      <callback-patch />
+      <callback-patch :unionId="unionId" />
     </div>
   </section>
 
@@ -45,6 +45,8 @@ export default {
     const hasAccount = ref(true)
     const store = useStore()
     const router = useRouter()
+    // 存储 openId 给组件去使用
+    const unionId = ref(null)
 
     // 首先：默认认为已经注册且已经绑定
     const isBind = ref(true)
@@ -54,6 +56,7 @@ export default {
     if (QC.Login.check()) {
       // 第三方唯一标识 QQ 唯一标识
       QC.Login.getMe(openId => {
+        unionId.value = openId
         // 请求小兔鲜后台，做 QQ 登录
         userQQLogin(openId)
           .then(data => {
@@ -74,7 +77,7 @@ export default {
       })
     }
 
-    return { hasAccount, isBind }
+    return { hasAccount, isBind, unionId }
   }
 }
 </script>
