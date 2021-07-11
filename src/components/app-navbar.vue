@@ -7,7 +7,7 @@
             <a href="javascript:;"><i class="iconfont icon-user"></i>{{ profile.account }}</a>
           </li>
           <!-- <li><a href="javascript:;">退出登录</a></li> -->
-          <li><router-link to="/login">退出登录</router-link></li>
+          <li><router-link @click="logout" to="/login">退出登录</router-link></li>
         </template>
         <template v-else>
           <!-- <li><a href="javascript:;">请先登录</a></li> -->
@@ -39,7 +39,13 @@ export default {
     const profile = computed(() => {
       return store.state.user.profile
     })
-    return { profile }
+    // 退出登录
+    // 1. 清空本地存储信息和 vuex 的用户信息
+    // 2. 跳转登录
+    const logout = () => {
+      store.commit('user/setUser', {})
+    }
+    return { profile, logout }
   }
 }
 </script>
