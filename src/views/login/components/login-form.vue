@@ -37,7 +37,7 @@
           <div class="input">
             <i class="iconfont icon-code"></i>
             <Field :class="{ error: errors.code }" v-model="form.code" name="code" type="password" placeholder="请输入验证码" />
-            <span class="code">发送验证码</span>
+            <span @click="send" class="code">{{ time === 0 ? '发送验证码' : `${time}秒后发送` }}</span>
           </div>
           <div class="error" v-if="errors.code"><i class="iconfont icon-warning" />{{ errors.code }}</div>
         </div>
@@ -67,11 +67,15 @@
 </template>
 
 <script>
-import { getCurrentInstance, reactive, ref, watch } from 'vue'
+import { getCurrentInstance, onUnmounted, reactive, ref, watch } from 'vue'
 // 1. 从第三方包里面导入需要校验的组件 Form-form 容器 Field-input 表单元素
 import { Field, Form } from 'vee-validate'
 // 导入校验规则
 import schema from '@/utils/vee-validate-schema'
+import { userAccountLogin, userMobileLogin, userMobileLoginMsg } from '@/api/user'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { useIntervalFn } from '@vueuse/core'
 // import Message from '@/components/library/Message'
 export default {
   name: 'LoginForm',
@@ -82,7 +86,6 @@ export default {
     // 表单数据对象
     const form = reactive({
       isAgree: true,
-
       account: null,
       password: null,
       mobile: null,
@@ -109,21 +112,83 @@ export default {
       target.value.resetForm()
     })
 
-    // vue3 setup 中提供一个方法拿到 vue 实例
-    // 此时 app 是应用实例，组件实例还是在应用实例中
-    // const app = getCurrentInstance()
-    // proxy 就是当前组件实例
     const { proxy } = getCurrentInstance()
 
+    const store = useStore()
+    const router = useRouter()
+    // 获取路由信息
+    const route = useRoute()
     const login = () => {
-      target.value.validate().then(valid => {
-        console.log(valid)
-        // Message({ text: '提示文字错误', type: 'error' })
-        proxy.$message({ text: '1111111111' })
+      target.value.validate().then(async valid => {
+        if (valid) {
+          // async 和 await 的错误提示 => 使用 try catch
+          try {
+            let data = null
+            if (isMsgLogin.value) {
+              const { mobile, code } = form
+              // 手机号登录
+              data = await userMobileLogin({ mobile, code })
+            } else {
+              // 账号密码登录
+              const { account, password } = form
+              data = await userAccountLogin({ account, password })
+            }
+            // 存储用户信息
+            const { id, avatar, nickname, account, mobile, token } = data.result
+            store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
+            // 进行跳转
+            router.push(route.query.redirectUrl || '/')
+            // 成功的消息提示
+            proxy.$message({ type: 'success', text: '登录成功' })
+          } catch (e) {
+            // 失败的消息提示
+            if (e.response.data) {
+              proxy.$message({ type: 'error', text: e.response.data.message || '登录失败' })
+            }
+          }
+        }
       })
     }
 
-    return { isMsgLogin, form, schema: mySchema, target, login }
+    // 开启倒计时 useIntervalFn(回调函数，时间间隔，是否立即开启)
+    // pause 暂停 resume 开启
+    const time = ref(0)
+    const { pause, resume } = useIntervalFn(
+      () => {
+        time.value--
+        if (time.value <= 0) {
+          pause()
+        }
+      },
+      1000,
+      { immediate: false }
+    )
+
+    // 组件销毁时清除定时器
+    onUnmounted(() => {
+      pause()
+    })
+
+    // 发送手机验证码
+    const send = async () => {
+      // 校验手机号，返回的是布尔值
+      const valid = mySchema.mobile(form.mobile)
+      if (valid === true) {
+        // 通过且没有倒计时才可以发送请求
+        if (time.value === 0) {
+          await userMobileLoginMsg(form.mobile)
+          // 消息提示
+          proxy.$message({ type: 'success', text: '短信发送成功' })
+          // 开启倒计时
+          time.value = 60
+          resume()
+        }
+      } else {
+        // 失败，使用 vee 的错误函数显示错误信息(此处用 error.mobile 来控制)， vee 有对应的 API 函数进行展示 setFieldError(字段,错误信息)
+        target.value.setFieldError('mobile', valid)
+      }
+    }
+    return { isMsgLogin, form, schema: mySchema, target, login, send, time }
   }
 }
 </script>
