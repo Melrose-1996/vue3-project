@@ -57,7 +57,11 @@
       <a @click="login" href="javascript:;" class="btn">登录</a>
     </Form>
     <div class="action">
-      <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="" />
+      <!-- <span id="qqLoginBtn"></span> -->
+      <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
+        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="" />
+      </a>
+      <!-- <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="" /> -->
       <div class="url">
         <a href="javascript:;">忘记密码</a>
         <a href="javascript:;">免费注册</a>
@@ -67,7 +71,7 @@
 </template>
 
 <script>
-import { getCurrentInstance, onUnmounted, reactive, ref, watch } from 'vue'
+import { getCurrentInstance, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 // 1. 从第三方包里面导入需要校验的组件 Form-form 容器 Field-input 表单元素
 import { Field, Form } from 'vee-validate'
 // 导入校验规则
@@ -76,6 +80,7 @@ import { userAccountLogin, userMobileLogin, userMobileLoginMsg } from '@/api/use
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { useIntervalFn } from '@vueuse/core'
+import QC from 'qc'
 // import Message from '@/components/library/Message'
 export default {
   name: 'LoginForm',
@@ -184,10 +189,14 @@ export default {
           resume()
         }
       } else {
-        // 失败，使用 vee 的错误函数显示错误信息(此处用 error.mobile 来控制)， vee 有对应的 API 函数进行展示 setFieldError(字段,错误信息)
         target.value.setFieldError('mobile', valid)
       }
     }
+
+    onMounted(() => {
+      QC.Login({ btnId: 'qqLoginBtn' })
+    })
+
     return { isMsgLogin, form, schema: mySchema, target, login, send, time }
   }
 }
