@@ -19,13 +19,19 @@ export default {
         mobile: '',
         // 用户 token
         token: ''
-      }
+      },
+      // 登录后回调路径
+      redirectUrl: '/'
     }
   },
   mutations: {
     // 修改用户信息
     setUser(state, payload) {
       state.profile = payload
+    },
+    // 修改回调地址
+    setRedirectUrl(state, url) {
+      state.redirectUrl = url
     }
   }
 }
