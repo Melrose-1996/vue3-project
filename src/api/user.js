@@ -60,3 +60,32 @@ export const userQQBindCode = mobile => {
 export const userQQBindLogin = ({ unionId, mobile, code }) => {
   return request('/login/social/bind', 'post', { unionId, mobile, code })
 }
+
+/**
+ * 注册-校验用户名唯一
+ * @param {String} account - 用户名或手机号
+ * @returns
+ */
+export const userAccountCheck = account => {
+  return request('/register/check', 'get', { account })
+}
+
+/**
+ * @description: 获取 QQ 完善信息的时候的验证码
+ * @param {String} mobile - 手机
+ * @return: Promise
+ */
+export const userQQPatchCode = mobile => {
+  return request('/register/code', 'get', { mobile })
+}
+
+/**
+ * QQ登录-完善帐号
+ * @param {String} unionId - QQ唯一标识，openId
+ * @param {String} mobile - 手机号
+ * @param {String} code - 验证码
+ * @returns
+ */
+export const userQQPatchLogin = ({ unionId, mobile, code, account, password }) => {
+  return request(`/login/social/${unionId}/complement`, 'post', { mobile, code, account, password })
+}
