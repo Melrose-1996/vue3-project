@@ -21,7 +21,7 @@
           <!-- 数量选择组件 -->
           <xtx-numbox v-model="num" :max="goods.inventory" label="数量" />
           <!-- 按钮组件 -->
-          <xtx-button type="primary" style="margin-top: 20px">加入购物车</xtx-button>
+          <xtx-button @click="insertCart" type="primary" style="margin-top: 20px">加入购物车</xtx-button>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -58,43 +58,66 @@ import XtxButton from '@/components/library/xtx-button.vue'
 import GoodsTabs from './components/goods-tabs.vue'
 import GoodsHot from './components/goods-hot.vue'
 import GoodsWarn from './components/goods-warn.vue'
+import { useStore } from 'vuex'
+import Message from '@/components/library/Message'
 export default {
   name: 'XtxGoodsPage',
   components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, XtxNumbox, XtxButton, GoodsTabs, GoodsHot, GoodsWarn },
   setup() {
-    // 1. 获取商品详情，进行渲染
     const goods = useGoods()
-    // sku 组件给父组件传的值
+    const currSku = ref(null)
     const changeSku = sku => {
-      // 修改商品的现价原价和库存信息
+      // 此时需要记录这个选择后的 sku
+      // 1. 判断规格是否选择完整
+      // 2. 插入购物车也需要这个 sku 里面的数据
       if (sku.skuId) {
         goods.value.price = sku.price
         goods.value.oldPrice = sku.oldPrice
         goods.value.inventory = sku.inventory
       }
+      currSku.value = sku
     }
-    // 提供 goods 数据给后代组件使用
     provide('goods', goods)
-    // 选择的数量
     const num = ref(1)
-    return { goods, changeSku, num }
+
+    const store = useStore()
+    // 加入购物车
+    const insertCart = () => {
+      // 判断规格是否选完
+      if (currSku.value && currSku.value.skuId) {
+        store
+          .dispatch('cart/insertCart', {
+            id: goods.value.id,
+            skuId: currSku.value.skuId,
+            name: goods.value.name,
+            picture: goods.value.mainPictures[0],
+            price: currSku.value.price,
+            nowPrice: currSku.value.price,
+            count: num.value,
+            attrsText: currSku.value.specsText,
+            selected: true,
+            isEffective: true,
+            stock: currSku.value.inventory
+          })
+          .then(() => {
+            Message({ text: '添加成功', type: 'success' })
+          })
+      } else {
+        Message({ text: '请选择完整的规格' })
+      }
+    }
+    return { goods, changeSku, num, insertCart }
   }
 }
-// 获取商品详情 - 把该函数剥离出来，防止 setup 过于冗余
 const useGoods = () => {
-  // 出现路由地址的商品 ID 发生变化，但是不会重新初始化组件
   const goods = ref(null)
   const route = useRoute()
   watch(
     () => route.params.id,
     newVal => {
-      // 注意：每次加载数据的时候，需要先把商品的信息置成空，当有数据之后才会去显示(可以加个 loading 效果过渡)
       if (newVal && `/product/${newVal}` === route.path) {
         findGoods(route.params.id).then(data => {
-          // 每次更新数据的时候，都让组件初始化
           goods.value = null
-          // 两段对 goods.value 赋值写在一起，上一个并不会生效，需要加个 nextTick
-          // 当改为数据立刻去操作 DOM ，发现操作不上(数据还没生效) => nextTick
           nextTick(() => {
             goods.value = data.result
           })
