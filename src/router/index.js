@@ -6,6 +6,8 @@ const Home = () => import('@/views/home')
 const topCategory = () => import('@/views/category/index.vue')
 const SubCategory = () => import('@/views/category/sub.vue')
 const Goods = () => import('@/views/goods/index.vue')
+const Cart = () => import('@/views/cart')
+
 const Login = () => import('@/views/login/index.vue')
 const LoginCallback = () => import('@/views/login/callback.vue')
 
@@ -19,7 +21,8 @@ const routes = [
       { path: '/', component: Home },
       { path: '/category/:id', component: topCategory },
       { path: '/category/sub/:id', component: SubCategory },
-      { path: '/product/:id', component: Goods }
+      { path: '/product/:id', component: Goods },
+      { path: '/cart', component: Cart }
     ]
   },
   { path: '/login', component: Login },
