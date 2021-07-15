@@ -20,8 +20,28 @@ export default {
     },
     // 有效商品总金额
     validAmount(state, getters) {
-      // 遇到浮点数需要先把它处理为整数，再做运算
-      return getters.validList.reduce((p, c) => p + parseInt(c.nowPrice * 100) * c.count, 0) / 100
+      // 遇到浮点数需要先把它处理为整数(这里用的是 Math 的四舍五入的方法 - .9999 的情况需要考虑进来)，再做运算
+      return getters.validList.reduce((p, c) => p + Math.round(c.nowPrice * 100) * c.count, 0) / 100
+    },
+    // 无效商品列表
+    inValidList(state) {
+      return state.list.filter(goods => goods.stock <= 0 || goods.isEffective)
+    },
+    // 已选商品列表
+    selectedList(state, getters) {
+      return getters.validList.filter(item => item.selected)
+    },
+    // 已选商品件数
+    selectedTotal(state, getters) {
+      return getters.selectedList.reduce((p, c) => p + c.count, 0)
+    },
+    // 已选商品总金额
+    selectedAmount(state, getters) {
+      return getters.selectedList.reduce((p, c) => p + Math.round(c.nowPrice * 100) * c.count, 0) / 100
+    },
+    // 是否全选
+    isCheckAll(state, getters) {
+      return getters.selectedList.length !== 0 && getters.selectedList.length === getters.validList.length
     }
   },
   mutations: {
