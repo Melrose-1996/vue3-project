@@ -29,38 +29,45 @@ export default {
     insertCart(state, payload) {
       const sameIndex = state.list.findIndex(goods => goods.skuId === payload.skuId)
       if (sameIndex > -1) {
-        // 找到对应商品的数量，然后累加
         const count = state.list[sameIndex].count
         payload.count += count
-        // 原来的商品删除
         state.list.splice(sameIndex, 1)
       }
-      // 追加新的
       state.list.unshift(payload)
     },
-    // 修改购物车商品
     updateCart(state, goods) {
-      // goods 商品信息： nowPrice stock isEffective
-      // goods 商品对象的字段不固定，对象有哪些字段就改哪些字段，字段的值需要合理
-      // goods 商品对象 必须有 skuId
       const updataGoods = state.list.find(item => item.skuId === goods.skuId)
       for (const key in goods) {
-        // 可能存在很多情况
         if (goods[key] !== undefined && goods[key] !== null && goods[key] !== '') {
           updataGoods[key] = goods[key]
         }
       }
+    },
+    // 删除购物车商品
+    deleteCart(state, skuId) {
+      const index = state.list.findIndex(goods => goods.skuId === skuId)
+      state.list.splice(index, 1)
     }
   },
   actions: {
-    // 加入购物车
-    insertCart(ctx, payload) {
-      // payload 商品信息
+    // 删除购物车
+    deleteCart(ctx, payload) {
       return new Promise((resolve, reject) => {
-        // TODO 登录
         if (ctx.rootState.user.profile.token) {
+          // 已登录
         } else {
           // 未登录
+          // 单条删除 playload 现在就是 skuId
+          ctx.commit('deleteCart', payload)
+          resolve()
+        }
+      })
+    },
+    // 加入购物车
+    insertCart(ctx, payload) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+        } else {
           ctx.commit('insertCart', payload)
           resolve()
         }
@@ -71,17 +78,11 @@ export default {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
         } else {
-          // 未登录
-          // 同时发送请求(有几个商品发送几个请求)，等所有的请求成功，一并去修改本地数据
-          // promise.all(promise 数组).then((dataList-所有请求成功的结果都在这个里面)=>{}) 同时发送请求，所有请求成功，得到所有的请求结果
-          // Promise.race() 可以并列发送多个请求，等最快的请求成功，得到所有的请求结果 => 用于检测两个服务器调用接口
           const promiseArr = ctx.state.list.map(goods => {
             return findNewCartGoods(goods.skuId)
           })
-          // dataList 成功的集合，数据顺序和 promiseArr 顺序一致，dataList又是根据 state.list 而来的，所以 dataList 的顺序和 state.list 一致
           Promise.all(promiseArr)
             .then(dataList => {
-              // 更新本地购物车
               dataList.forEach((data, i) => {
                 ctx.commit('updateCart', { ...data.result, skuId: ctx.state.list[i].skuId })
               })
