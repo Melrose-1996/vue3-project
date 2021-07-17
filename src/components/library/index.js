@@ -1,5 +1,6 @@
 import defaultImg from '@/assets/images/200.png'
 import Message from './Message'
+import Confirm from './Confirm'
 
 const importFn = require.context('./', false, /\.vue$/)
 
@@ -16,6 +17,7 @@ export default {
 
     // 定义一个原型函数
     app.config.globalProperties.$message = Message
+    app.config.globalProperties.$confirm = Confirm
   }
 }
 
