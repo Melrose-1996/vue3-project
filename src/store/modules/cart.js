@@ -70,6 +70,26 @@ export default {
     }
   },
   actions: {
+    // 修改规格
+    updateCartSku(ctx, { oldSkuId, newSku }) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          // 未登录
+          // 1. 找出旧的商品信息
+          // 2. 删除旧的商品信息(skuId 已经发生变化)
+          // 3. 根据新的 sku 信息和旧的商品信息，合并成一条新的购物车商品信息
+          // 4. 添加新的商品
+          const oldGoods = ctx.state.list.find(item => item.skuId === oldSkuId)
+          ctx.commit('deleteCart', oldSkuId)
+          const { skuId, price: nowPrice, inventory: stock, specsText: attrsText } = newSku
+          const newGoods = { ...oldGoods, skuId, nowPrice, stock, attrsText }
+          ctx.commit('insertCart', newGoods)
+          resolve()
+        }
+      })
+    },
     // 批量删除
     batchDeleteCart(ctx, isClear) {
       return new Promise((resolve, reject) => {
@@ -78,7 +98,7 @@ export default {
         } else {
           // 未登录
           // 找出选中的商品列表，遍历调用删除的 mutations 方法
-          // isClear 为 true 删除失效商品列表，否则是选中的商品
+          // isClear 为 true 删除失效商品列表，否则是选中的商品updateCartSku
           ctx.getters[isClear ? 'inValidList' : 'selectedList'].forEach(item => {
             ctx.commit('deleteCart', item.skuId)
           })
