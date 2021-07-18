@@ -50,9 +50,6 @@ export default {
 
     // 首先：默认认为已经注册且已经绑定
     const isBind = ref(true)
-    // 通过 QQ 的 API  获取 openId 就是后台需要的 id 进行登录
-    // 如果成功：登录成功
-    // 如果失败：该 QQ 未和小兔仙进行绑定(有账号未绑定 QQ ，没有账号没有绑定 QQ )
     if (QC.Login.check()) {
       // 第三方唯一标识 QQ 唯一标识
       QC.Login.getMe(openId => {
@@ -60,15 +57,12 @@ export default {
         // 请求小兔鲜后台，做 QQ 登录
         userQQLogin(openId)
           .then(data => {
-            // 如果能够拿到数据，说明登录成功 data.result 就是用户信息
-            // 1. 储存用户信息
-            // 2. 跳转到来源页或者首页
-            // 3. 成功提示
-            // 存储用户信息
             const { id, avatar, nickname, account, mobile, token } = data.result
             store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
-            router.push(store.state.user.redirectUrl)
-            Message({ type: 'success', text: 'QQ登录成功' })
+            store.dispatch('cart/mergeCart').then(() => {
+              router.push(store.state.user.redirectUrl)
+              Message({ type: 'success', text: 'QQ登录成功' })
+            })
           })
           .catch(e => {
             // 登录失败：没有和小兔鲜绑定

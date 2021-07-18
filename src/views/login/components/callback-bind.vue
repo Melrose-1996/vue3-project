@@ -126,8 +126,10 @@ export default {
             // 实现和登录一样的逻辑
             const { id, avatar, nickname, account, mobile, token } = data.result
             store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
-            router.push(store.state.user.redirectUrl)
-            Message({ type: 'success', text: 'QQ绑定成功' })
+            store.dispatch('cart/mergeCart').then(() => {
+              router.push(store.state.user.redirectUrl)
+              Message({ type: 'success', text: 'QQ绑定成功' })
+            })
           })
           .catch(e => {
             Message({ type: 'error', text: '绑定失败' })

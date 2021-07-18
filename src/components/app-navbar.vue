@@ -28,22 +28,20 @@
 <script>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+// import { useRouter } from 'vue-router'
 export default {
   name: 'AppTopnav',
   setup() {
-    // 获取用户的登录信息 => 才能切换导航菜单
     const store = useStore()
-    // 注意这样直接导出是不会响应式的
-    // const { profile } = store.state.user
-    // 使用 vuex 中的 state 状态，需要使用计算属性
+    // const router = useRouter()
     const profile = computed(() => {
       return store.state.user.profile
     })
-    // 退出登录
-    // 1. 清空本地存储信息和 vuex 的用户信息
-    // 2. 跳转登录
     const logout = () => {
       store.commit('user/setUser', {})
+      // 清空购物车
+      store.commit('cart/setCart', [])
+      // router.push('/login')
     }
     return { profile, logout }
   }

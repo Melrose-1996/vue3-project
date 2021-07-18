@@ -80,7 +80,7 @@ import { userAccountLogin, userMobileLogin, userMobileLoginMsg } from '@/api/use
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { useIntervalFn } from '@vueuse/core'
-import QC from 'qc'
+// import QC from 'qc'
 // import Message from '@/components/library/Message'
 export default {
   name: 'LoginForm',
@@ -141,10 +141,12 @@ export default {
             // 存储用户信息
             const { id, avatar, nickname, account, mobile, token } = data.result
             store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
-            // 进行跳转
-            router.push(route.query.redirectUrl || '/')
-            // 成功的消息提示
-            proxy.$message({ type: 'success', text: '登录成功' })
+            store.dispatch('cart/mergeCart').then(() => {
+              // 进行跳转
+              router.push(route.query.redirectUrl || '/')
+              // 成功的消息提示
+              proxy.$message({ type: 'success', text: '登录成功' })
+            })
           } catch (e) {
             // 失败的消息提示
             if (e.response.data) {
@@ -194,7 +196,7 @@ export default {
     }
 
     onMounted(() => {
-      QC.Login({ btnId: 'qqLoginBtn' })
+      // QC.Login({ btnId: 'qqLoginBtn' })
     })
 
     return { isMsgLogin, form, schema: mySchema, target, login, send, time }
