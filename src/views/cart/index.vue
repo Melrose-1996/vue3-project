@@ -45,7 +45,7 @@
                 </p>
               </td>
               <td class="tc">
-                <XtxNumbox :modelValue="goods.count" />
+                <XtxNumbox @change="$event => updateCount(goods.skuId, $event)" :max="goods.stock" :modelValue="goods.count" />
               </td>
               <td class="tc">
                 <p class="f16 red">&yen;{{ (Math.round(goods.nowPrice * 100) * goods.count) / 100 }}</p>
@@ -92,9 +92,9 @@
       <div class="action">
         <div class="batch">
           <XtxCheckbox @change="checkAll" :modelValue="$store.getters['cart/isCheckAll']">全选</XtxCheckbox>
-          <a href="javascript:;">删除商品</a>
+          <a @click="batchDeleteCart" href="javascript:;">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
-          <a href="javascript:;">清空失效商品</a>
+          <a @click="batchDeleteCart(true)" href="javascript:;">清空失效商品</a>
         </div>
         <div class="total">
           共 {{ $store.getters['cart/validTotal'] }} 件商品，已选择 {{ $store.getters['cart/selectedTotal'] }} 件，商品合计：
@@ -134,11 +134,23 @@ export default {
             Message({ type: 'success', text: '删除成功' })
           })
         })
-        .catch(e => {
-          console.log('取消')
-        })
+        .catch(e => {})
     }
-    return { checkOne, checkAll, deleteCart }
+    // 批量删除选中商品，也支持清空无效商品
+    const batchDeleteCart = isClear => {
+      Confirm({ text: `亲，您是否确认删除${isClear ? '失效的' : '已选中的'}商品` })
+        .then(() => {
+          store.dispatch('cart/batchDeleteCart', isClear).then(() => {
+            Message({ type: 'success', text: '删除成功' })
+          })
+        })
+        .catch(e => {})
+    }
+    // 修改数量
+    const updateCount = (skuId, count) => {
+      store.dispatch('cart/updateCart', { skuId, count })
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, updateCount }
   }
 }
 </script>
