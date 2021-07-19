@@ -18,8 +18,7 @@ export default createStore({
       // 本地存储数据的名字
       key: 'erabbit-client-pc-store',
       // 指定需要存储的模块
-      paths: ['user', 'cart'],
-      storage: window.sessionStorage
+      paths: ['user', 'cart']
     })
   ]
 })

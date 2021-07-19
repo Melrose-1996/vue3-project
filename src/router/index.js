@@ -12,6 +12,8 @@ const Cart = () => import('@/views/cart')
 const Login = () => import('@/views/login/index.vue')
 const LoginCallback = () => import('@/views/login/callback.vue')
 
+const Checkout = () => import('@/views/member/pay/checkout.vue')
+
 // 路由规则
 const routes = [
   // 一级路由
@@ -23,7 +25,8 @@ const routes = [
       { path: '/category/:id', component: topCategory },
       { path: '/category/sub/:id', component: SubCategory },
       { path: '/product/:id', component: Goods },
-      { path: '/cart', component: Cart }
+      { path: '/cart', component: Cart },
+      { path: '/member/checkout', component: Checkout }
     ]
   },
   { path: '/login', component: Login },
