@@ -13,14 +13,25 @@
       <a v-if="showAddress" href="javascript:;">修改地址</a>
     </div>
     <div class="action">
-      <XtxButton class="btn">切换地址</XtxButton>
+      <XtxButton @click="visibleDialog = true" class="btn">切换地址</XtxButton>
       <XtxButton class="btn">添加地址</XtxButton>
     </div>
   </div>
+  <!-- 对话框插件 -->
+  <xtx-dialog title="切换收货地址" v-model:visible="visibleDialog">
+    内容
+    <template #footer>
+      <XtxButton @click="visibleDialog = false" type="gray" style="margin-right:20px">取消</XtxButton>
+      <XtxButton @click="visibleDialog = false" type="primary">确认</XtxButton>
+    </template>
+    <!-- <template v-slot:footer></template> -->
+  </xtx-dialog>
 </template>
 <script>
 import { ref } from 'vue'
+import xtxDialog from '@/components/library/xtx-dialog.vue'
 export default {
+  components: { xtxDialog },
   name: 'CheckoutAddress',
   props: {
     // 收货地址列表
@@ -43,7 +54,9 @@ export default {
         showAddress.value = props.list[0]
       }
     }
-    return { showAddress }
+    // 显示和隐藏
+    const visibleDialog = ref(false)
+    return { showAddress, visibleDialog }
   }
 }
 </script>
