@@ -91,10 +91,10 @@ export default {
     // 表单数据对象
     const form = reactive({
       isAgree: true,
-      account: null,
-      password: null,
-      mobile: 13666666666,
-      code: 123456
+      account: 'zhousg',
+      password: 123456,
+      mobile: null,
+      code: null
     })
 
     const mySchema = {
@@ -112,8 +112,8 @@ export default {
       form.isAgree = true
       form.account = null
       form.password = null
-      form.mobile = 13666666666
-      form.code = 123456
+      form.mobile = null
+      form.code = null
       target.value.resetForm()
     })
 

@@ -33,6 +33,10 @@ import xtxDialog from '@/components/library/xtx-dialog.vue'
 export default {
   components: { xtxDialog },
   name: 'CheckoutAddress',
+  // 1. 在拥有根元素的组件，触发自定义使用，由于 emits 选项无所谓
+  // 2. 当使用代码片段的时候，需要使用 emits 选项声明所触发的 enit 事件，使用的更加规范
+  // 3. 提倡: 你出发了自定义事件，需要在 emits 选项声明下，使得触发那些事件一目了然
+  emits: ['change'],
   props: {
     // 收货地址列表
     list: {
@@ -40,7 +44,7 @@ export default {
       default: () => []
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     // 1. 找到默认收货地址
     // 2. 没有默认收货地址，使用第一条收货地址
     // 3. 如果没有数据，提示添加
@@ -54,6 +58,9 @@ export default {
         showAddress.value = props.list[0]
       }
     }
+    // 默认通知父组件一个收货地址 ID
+    emit('change', showAddress.value && showAddress.value.id)
+
     // 显示和隐藏
     const visibleDialog = ref(false)
     return { showAddress, visibleDialog }

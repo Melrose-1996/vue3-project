@@ -11,7 +11,7 @@
         <h3 class="box-title">收货地址</h3>
         <div class="box-body">
           <!-- 收货地址组件 -->
-          <checkout-address :list="order.userAddresses" />
+          <checkout-address @change="changeAddress" :list="order.userAddresses" />
         </div>
         <!-- 商品信息 -->
         <h3 class="box-title">商品信息</h3>
@@ -102,7 +102,15 @@ export default {
     createOrder().then(data => {
       order.value = data.result
     })
-    return { order }
+
+    // 提交订单: 需要收货地址
+    const addreddId = ref(null)
+    const changeAddress = id => {
+      addreddId.value = id
+      console.log(id)
+    }
+
+    return { order, changeAddress }
   }
 }
 </script>
