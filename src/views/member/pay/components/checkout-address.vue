@@ -13,16 +13,24 @@
       <a v-if="showAddress" href="javascript:;">修改地址</a>
     </div>
     <div class="action">
-      <XtxButton @click="visibleDialog = true" class="btn">切换地址</XtxButton>
+      <XtxButton @click="openDialog" class="btn">切换地址</XtxButton>
       <XtxButton class="btn">添加地址</XtxButton>
     </div>
   </div>
   <!-- 对话框插件 -->
   <xtx-dialog title="切换收货地址" v-model:visible="visibleDialog">
-    内容
+    <div @click="selectedAddress = item" :class="{ active: selectedAddress && selectedAddress.id === item.id }" class="text item" v-for="item in list" :key="item.id">
+      <ul>
+        <li>
+          <span>收<i />货<i />人：</span>{{ item.receiver }}
+        </li>
+        <li><span>联系方式：</span>{{ item.contact.replace(/^(\d{3})\d{4}(\d{4})/, '$1****$2') }}</li>
+        <li><span>收货地址：</span>{{ item.fullLocation.replace(/ /g, '') + item.address }}</li>
+      </ul>
+    </div>
     <template #footer>
       <XtxButton @click="visibleDialog = false" type="gray" style="margin-right:20px">取消</XtxButton>
-      <XtxButton @click="visibleDialog = false" type="primary">确认</XtxButton>
+      <XtxButton @click="confirmAddressFn" type="primary">确认</XtxButton>
     </template>
     <!-- <template v-slot:footer></template> -->
   </xtx-dialog>
@@ -61,13 +69,58 @@ export default {
     // 默认通知父组件一个收货地址 ID
     emit('change', showAddress.value && showAddress.value.id)
 
-    // 显示和隐藏
+    // 切换地址对话显示和隐藏
     const visibleDialog = ref(false)
-    return { showAddress, visibleDialog }
+
+    // 记录当前选中的地址 ID
+    const selectedAddress = ref(null)
+
+    // 传递当前的地址
+    const confirmAddressFn = () => {
+      // 显示的地址换成选中的地址
+      showAddress.value = selectedAddress.value
+      // 把选中的地址 ID 通知结算组件
+      // 这个 ? 是对取值的前置判断，说明 value 有值去取值
+      emit('change', selectedAddress.value?.id)
+      // 数据选中完毕置空
+
+      visibleDialog.value = false
+    }
+
+    // 将之前的选中地址改成 null
+    const openDialog = () => {
+      selectedAddress.value = null
+      visibleDialog.value = true
+    }
+
+    return { showAddress, visibleDialog, selectedAddress, confirmAddressFn, openDialog }
   }
 }
 </script>
 <style scoped lang="less">
+.xtx-dialog {
+  .text {
+    flex: 1;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    &.item {
+      border: 1px solid #f5f5f5;
+      margin-bottom: 10px;
+      cursor: pointer;
+      &.active,
+      &:hover {
+        border-color: @xtxColor;
+        background: lighten(@xtxColor, 50%);
+      }
+      > ul {
+        padding: 10px;
+        font-size: 14px;
+        line-height: 30px;
+      }
+    }
+  }
+}
 .checkout-address {
   border: 1px solid #f5f5f5;
   display: flex;
