@@ -3,7 +3,7 @@
     <!-- 选择头 -->
     <div class="select" @click="toggle" :class="{ active: visible }">
       <!-- 占位元素 -->
-      <span v-if="!fullLocation" class="placeholder">请选择配送地址</span>
+      <span v-if="!fullLocation" class="placeholder">{{ placeholder }}</span>
       <!-- 选择城市的地址 -->
       <span v-else class="value">{{ fullLocation }}</span>
       <i class="iconfont icon-angle-down"></i>
@@ -29,6 +29,10 @@ export default {
     fullLocation: {
       type: String,
       default: ''
+    },
+    placeholder: {
+      type: String,
+      default: '请选择配送地址'
     }
   },
   setup(props, { emit }) {

@@ -10,3 +10,12 @@ import request from '@/utils/request'
 export const createOrder = () => {
   return request('/member/order/pre', 'get')
 }
+
+/**
+ * @description:添加收货地址
+ * @param {Object} from - 参考接口文档
+ * @return: Promise
+ */
+export const addAdress = form => {
+  return request('/member/address', 'post', form)
+}

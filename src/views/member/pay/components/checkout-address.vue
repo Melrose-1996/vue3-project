@@ -14,10 +14,10 @@
     </div>
     <div class="action">
       <XtxButton @click="openDialog" class="btn">切换地址</XtxButton>
-      <XtxButton class="btn">添加地址</XtxButton>
+      <XtxButton @click="openAddressEdit" class="btn">添加地址</XtxButton>
     </div>
   </div>
-  <!-- 对话框插件 -->
+  <!-- 对话框插件-切换收货栏地址 -->
   <xtx-dialog title="切换收货地址" v-model:visible="visibleDialog">
     <div @click="selectedAddress = item" :class="{ active: selectedAddress && selectedAddress.id === item.id }" class="text item" v-for="item in list" :key="item.id">
       <ul>
@@ -34,12 +34,15 @@
     </template>
     <!-- <template v-slot:footer></template> -->
   </xtx-dialog>
+  <!-- 添加编辑组件-添加收货栏地址 -->
+  <address-edit @on-success="successHandler" ref="addressEditCom" />
 </template>
 <script>
 import { ref } from 'vue'
 import xtxDialog from '@/components/library/xtx-dialog.vue'
+import AddressEdit from './address-edit.vue'
 export default {
-  components: { xtxDialog },
+  components: { xtxDialog, AddressEdit },
   name: 'CheckoutAddress',
   // 1. 在拥有根元素的组件，触发自定义使用，由于 emits 选项无所谓
   // 2. 当使用代码片段的时候，需要使用 emits 选项声明所触发的 enit 事件，使用的更加规范
@@ -93,7 +96,24 @@ export default {
       visibleDialog.value = true
     }
 
-    return { showAddress, visibleDialog, selectedAddress, confirmAddressFn, openDialog }
+    // 打开添加编辑收货地址组件
+    const addressEditCom = ref(null)
+    const openAddressEdit = () => {
+      addressEditCom.value.open()
+    }
+
+    // 接收新来的添加的地址数据
+    const successHandler = formData => {
+      // 如果是添加: 往 list 追加一条
+      // 注意当你修改 formData 的时候，数组中的数据也会更新，因为是同一个引用地址
+      // 什么时候修改 formData 的时候，当你打开对话框需要请求之前的 form 数据
+      // 克隆 formData 数据
+      const jsonStr = JSON.stringify(formData)
+      // eslint-disable-next-line vue/no-mutating-props
+      props.list.unshift(JSON.parse(jsonStr))
+    }
+
+    return { showAddress, visibleDialog, selectedAddress, confirmAddressFn, openDialog, openAddressEdit, addressEditCom, successHandler }
   }
 }
 </script>
