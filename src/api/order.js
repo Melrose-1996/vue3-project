@@ -28,3 +28,12 @@ export const addAdress = form => {
 export const editAdress = form => {
   return request(`/member/address/${form.id}`, 'put', form)
 }
+
+/**
+ * @description:结算页面-提交订单
+ * @param {Object} params - 参考接口文档
+ * @return: Promise
+ */
+export const submitOrder = params => {
+  return request('/member/order', 'post', params)
+}
