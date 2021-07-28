@@ -4,7 +4,7 @@
       <ul>
         <template v-if="profile.token">
           <li>
-            <a href="javascript:;"><i class="iconfont icon-user"></i>{{ profile.account }}</a>
+            <router-link to="/member"><i class="iconfont icon-user"></i>{{ profile.account }}</router-link>
           </li>
           <!-- <li><a href="javascript:;">退出登录</a></li> -->
           <li><router-link @click="logout" to="/login">退出登录</router-link></li>
