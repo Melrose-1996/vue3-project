@@ -10,6 +10,10 @@ import 'normalize.css'
 // 2. 自己项目的重置样式和公共样式
 import '@/assets/styles/common.less'
 
+// mockjs
+// 一旦后台开发好了接口，只需要把该代码注释掉就行了
+import '@/mock'
+
 createApp(App)
   .use(store)
   .use(router)
