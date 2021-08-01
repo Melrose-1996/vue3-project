@@ -1,6 +1,7 @@
 // createWebHistory 还有一个历史模式，引入使用即可
 import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '@/store'
+import { h } from 'vue'
 
 const Layout = () => import('@/views/Layout')
 const Home = () => import('@/views/home')
@@ -17,6 +18,8 @@ const Pay = () => import('@/views/member/pay/index.vue')
 
 const MemberLayout = () => import('@/views/member/Layout.vue')
 const MemberHome = () => import('@/views/member/home')
+const MemberOrder = () => import('@/views/member/order')
+const MemberOrderDetail = () => import('@/views/member/order/detail')
 
 // 路由规则
 const routes = [
@@ -35,7 +38,20 @@ const routes = [
       {
         path: '/member',
         component: MemberLayout,
-        children: [{ path: '/member', component: MemberHome }]
+        children: [
+          { path: '/member', component: MemberHome },
+          {
+            // 这个是我们上一级路由的地址
+            path: '/member/order/',
+            component: { render: () => h(<RouterView />) },
+            children: [
+              // 这个是我们下一级路由的地址
+              // vue3.0 需要有嵌套关系才能模糊匹配
+              { path: '', component: MemberOrder },
+              { path: ':id', component: MemberOrderDetail }
+            ]
+          }
+        ]
       }
     ]
   },

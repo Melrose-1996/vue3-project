@@ -3,7 +3,7 @@
     <div class="user-manage">
       <h4>我的账户</h4>
       <div class="links">
-        <a href="javascript:;">个人中心</a>
+        <router-link exact-active-class="active" to="/member">个人中心</router-link>
         <a href="javascript:;">消息通知</a>
         <a href="javascript:;">个人信息</a>
         <a href="javascript:;">安全设置</a>
@@ -15,7 +15,8 @@
       </div>
       <h4>交易管理</h4>
       <div class="links">
-        <a href="javascript:;">我的订单</a>
+        <!-- 这里得是模糊匹配了，不然无法渲染动态组件 -->
+        <router-link active-class="active" to="/member/order">我的订单</router-link>
         <a href="javascript:;">优惠券</a>
         <a href="javascript:;">礼品卡</a>
         <a href="javascript:;">评价晒单</a>
