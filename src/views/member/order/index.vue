@@ -8,7 +8,7 @@
     <div class="order-list">
       <div v-if="loading" class="loading"></div>
       <div class="none" v-if="!loading && orderList.length === 0">暂无数据</div>
-      <order-item @on-cancel="handlerCancel" v-for="item in orderList" :key="item.id" :order="item" />
+      <order-item @on-cancel="handlerCancel" @on-delete="handlerDelete" v-for="item in orderList" :key="item.id" :order="item" />
     </div>
     <!-- 分页组件 -->
     <xtx-pagination v-if="total > 0" :current-page="reqParams.page" :page-size="reqParams.pageSize" :total="total" @current-change="reqParams.page = $event" />
@@ -21,8 +21,10 @@
 import { orderStatus } from '@/api/constants'
 import { reactive, ref, watch } from 'vue'
 import orderItem from './components/order-item.vue'
-import { findOrderList } from '@/api/order'
+import { deleteOrder, findOrderList } from '@/api/order'
 import OrderCancel from './components/order-cancel.vue'
+import Confirm from '@/components/library/Confirm'
+import Message from '@/components/library/Message'
 export default {
   components: { orderItem, OrderCancel },
   name: 'MemberOrder',
@@ -43,27 +45,44 @@ export default {
       reqParams.orderState = index
     }
 
+    // 删除订单
+    const handlerDelete = order => {
+      Confirm({ text: '亲，您确认删除该订单吗？' })
+        .then(() => {
+          deleteOrder(order.id).then(() => {
+            Message({ type: 'success', text: '删除成功' })
+            getOrderList()
+          })
+        })
+        .catch(() => {})
+    }
+
     // loading 效果
     const loading = ref(false)
 
     // 跟分页相关的总条数
     const total = ref(0)
 
+    // 请求列表 list 接口的函数
+    // 注意如果函数被立即调用，一定要放在 watch 前面
+    const getOrderList = () => {
+      loading.value = true
+      findOrderList(reqParams).then(data => {
+        orderList.value = data.result.items
+        total.value = data.result.counts
+        loading.value = false
+      })
+    }
     // 筛选条件变化重新加载
     watch(
       reqParams,
       () => {
-        loading.value = true
-        findOrderList(reqParams).then(data => {
-          orderList.value = data.result.items
-          total.value = data.result.counts
-          loading.value = false
-        })
+        getOrderList()
       },
       { immediate: true }
     )
 
-    return { activeName, orderStatus, orderList, tabClick, loading, total, reqParams, ...useCancel() }
+    return { activeName, orderStatus, orderList, tabClick, handlerDelete, loading, total, reqParams, ...useCancel() }
   }
 }
 

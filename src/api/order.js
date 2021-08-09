@@ -67,3 +67,12 @@ export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
 export const orderCancel = ({ orderId, cancelReason }) => {
   return request(`/member/order/${orderId}/cancel`, 'put', { cancelReason })
 }
+
+/**
+ * @description:删除订单接口
+ * @param {String} orderId - 订单ID
+ * @return: Promise
+ */
+export const deleteOrder = orderId => {
+  return request('/member/order', 'delete', { ids: [orderId] })
+}

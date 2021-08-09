@@ -8,7 +8,7 @@
         <b>付款截止：{{ timeText }}</b>
       </span>
       <!-- 已完成 已取消 -->
-      <a v-if="[5, 6].includes(order.orderState)" href="javascript:;" class="del">删除</a>
+      <a @click="$emit('on-delete', order)" v-if="[5, 6].includes(order.orderState)" href="javascript:;" class="del">删除</a>
     </div>
     <div class="body">
       <div class="column goods">
@@ -70,7 +70,7 @@ export default {
     start(props.order.countdown)
     return { orderStatus, timeText }
   },
-  emits: ['on-cancel'],
+  emits: ['on-cancel', 'on-delete'],
   props: {
     order: {
       type: Object,
