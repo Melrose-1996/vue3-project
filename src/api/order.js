@@ -57,3 +57,13 @@ export const findOrderDetail = orderId => {
 export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
   return request('/member/order', 'get', { page, pageSize, orderState })
 }
+
+/**
+ * @description:取消订单接口
+ * @param {String} orderId - 订单ID
+ * @param {String} cancelReason - 取消原因
+ * @return: Promise
+ */
+export const orderCancel = ({ orderId, cancelReason }) => {
+  return request(`/member/order/${orderId}/cancel`, 'put', { cancelReason })
+}
