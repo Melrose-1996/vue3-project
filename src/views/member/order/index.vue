@@ -8,12 +8,14 @@
     <div class="order-list">
       <div v-if="loading" class="loading"></div>
       <div class="none" v-if="!loading && orderList.length === 0">暂无数据</div>
-      <order-item @on-cancel="handlerCancel" @on-delete="handlerDelete" v-for="item in orderList" :key="item.id" :order="item" />
+      <order-item @on-cancel="handlerCancel" @on-delete="handlerDelete" @on-confirm="handlerConfirm" @on-logistics="handlerLogistics" v-for="item in orderList" :key="item.id" :order="item" />
     </div>
     <!-- 分页组件 -->
     <xtx-pagination v-if="total > 0" :current-page="reqParams.page" :page-size="reqParams.pageSize" :total="total" @current-change="reqParams.page = $event" />
     <!-- 取消原因组件 -->
     <order-cancel ref="orderCancelCom" />
+    <!-- 查看物流组件 -->
+    <order-logistics ref="orderLogisticsCom" />
   </div>
 </template>
 
@@ -21,12 +23,13 @@
 import { orderStatus } from '@/api/constants'
 import { reactive, ref, watch } from 'vue'
 import orderItem from './components/order-item.vue'
-import { deleteOrder, findOrderList } from '@/api/order'
+import { confirmOrder, deleteOrder, findOrderList } from '@/api/order'
 import OrderCancel from './components/order-cancel.vue'
 import Confirm from '@/components/library/Confirm'
 import Message from '@/components/library/Message'
+import OrderLogistics from './components/order-logistics.vue'
 export default {
-  components: { orderItem, OrderCancel },
+  components: { orderItem, OrderCancel, OrderLogistics },
   name: 'MemberOrder',
   setup() {
     const activeName = ref('all')
@@ -82,7 +85,7 @@ export default {
       { immediate: true }
     )
 
-    return { activeName, orderStatus, orderList, tabClick, handlerDelete, loading, total, reqParams, ...useCancel() }
+    return { activeName, orderStatus, orderList, tabClick, handlerDelete, loading, total, reqParams, ...useCancel(), ...useConfirm(), ...useLogistics() }
   }
 }
 
@@ -96,6 +99,29 @@ const useCancel = () => {
   }
   // 注意返回的是一个对象
   return { handlerCancel, orderCancelCom }
+}
+// 确认收货逻辑
+const useConfirm = () => {
+  const handlerConfirm = order => {
+    Confirm({ text: '亲，您确定收货吗？确定后贷款将打给卖家。' })
+      .then(() => {
+        confirmOrder(order.id).then(data => {
+          Message({ type: 'success', text: '确认收货成功' })
+          // 待收货 ---> 待评价
+          order.orderState = 4
+        })
+      })
+      .catch(() => {})
+  }
+  return { handlerConfirm }
+}
+// 查看物流逻辑
+const useLogistics = () => {
+  const orderLogisticsCom = ref(null)
+  const handlerLogistics = order => {
+    orderLogisticsCom.value.open(order)
+  }
+  return { handlerLogistics, orderLogisticsCom }
 }
 </script>
 
