@@ -3,6 +3,7 @@
     <!-- 头部 -->
     <detail-action :order="order" />
     <!-- 进度 -->
+    <detail-step :order="order" />
     <!-- 物流 -->
     <!-- 信息 -->
   </div>
@@ -13,8 +14,9 @@ import { ref } from 'vue'
 import detailAction from './components/detail-action.vue'
 import { findOrderDetail } from '@/api/order'
 import { useRoute } from 'vue-router'
+import DetailStep from './components/detail-step.vue'
 export default {
-  components: { detailAction },
+  components: { detailAction, DetailStep },
   name: 'MemberDetail',
   setup() {
     const route = useRoute()
