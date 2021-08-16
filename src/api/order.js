@@ -3,12 +3,21 @@
 import request from '@/utils/request'
 
 /**
- * @description: 结算页面生成订单
+ * @description: 结算页面生成订单 - 根据购物车商品生成订单
  * @param {null}
  * @return: Promise
  */
 export const createOrder = () => {
   return request('/member/order/pre', 'get')
+}
+
+/**
+ * @description: 结算页面生成订单 - 根据订单商品生成订单
+ * @param {null}
+ * @return: Promise
+ */
+export const findOrderRepurchase = id => {
+  return request(`/member/order/repurchase/${id}`, 'get')
 }
 
 /**

@@ -91,20 +91,31 @@
 </template>
 <script>
 import checkoutAddress from './components/checkout-address.vue'
-import { createOrder, submitOrder } from '@/api/order'
+import { createOrder, submitOrder, findOrderRepurchase } from '@/api/order'
 import { reactive, ref } from 'vue'
 import Message from '@/components/library/Message'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 export default {
   components: { checkoutAddress },
   name: 'XtxPayCheckoutPage',
   setup() {
     // 获取结算功能-生成订单-订单信息
     const order = ref(null)
-    createOrder().then(data => {
-      order.value = data.result
-      reqParams.goods = data.result.goods.map(({ skuId, count }) => ({ skuId, count }))
-    })
+    // 需要判断是否从订单还是从再次购买跳转过来的
+    const route = useRoute()
+    if (route.query.orderId) {
+      // 按照订单商品结算
+      findOrderRepurchase(route.query.orderId).then(data => {
+        order.value = data.result
+        reqParams.goods = data.result.goods.map(({ skuId, count }) => ({ skuId, count }))
+      })
+    } else {
+      // 按照购物车商品进行结算
+      createOrder().then(data => {
+        order.value = data.result
+        reqParams.goods = data.result.goods.map(({ skuId, count }) => ({ skuId, count }))
+      })
+    }
 
     // 提交订单: 需要收货地址 ID
     const changeAddress = id => {

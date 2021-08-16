@@ -90,7 +90,7 @@ export default {
 }
 
 // 取消订单逻辑
-const useCancel = () => {
+export const useCancel = () => {
   // 绑定取消订单组件实例
   const orderCancelCom = ref(null)
   // 点击取消
@@ -101,7 +101,7 @@ const useCancel = () => {
   return { handlerCancel, orderCancelCom }
 }
 // 确认收货逻辑
-const useConfirm = () => {
+export const useConfirm = () => {
   const handlerConfirm = order => {
     Confirm({ text: '亲，您确定收货吗？确定后贷款将打给卖家。' })
       .then(() => {
